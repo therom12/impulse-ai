@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IMPULSE AI</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#0b1020;color:#fff}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:10px;padding:11px 16px;background:#6d5dfc;color:#fff;font-weight:bold}
+button.secondary{background:#263252}
+button.danger{background:#b8324b}
+.container{max-width:1150px;margin:auto;padding:24px}
+.card{background:#121a2e;border:1px solid #293555;border-radius:18px;padding:20px;margin-bottom:18px}
+.hidden{display:none}
+.logo{font-size:28px;font-weight:900}
+.logo span{color:#8d7dff}
+.muted{color:#9ca8c7}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+input,select,textarea{
+width:100%;padding:12px;margin:6px 0 12px;
+background:#0d1426;border:1px solid #34405f;
+border-radius:10px;color:white
+}
+textarea{min-height:90px}
+.stat strong{display:block;font-size:28px;margin-top:8px}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:12px 8px;text-align:left;border-bottom:1px solid #293555}
+.badge{background:#20385f;padding:5px 9px;border-radius:20px;font-size:12px}
+.modal{position:fixed;inset:0;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px}
+.modalbox{width:100%;max-width:560px;max-height:90vh;overflow:auto}
+.msg{background:#1c2946;padding:10px;border-radius:10px;margin:10px 0}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div id="auth" class="card" style="max-width:480px;margin:50px auto">
+
+<div class="logo">
+IMPULSE <span>AI</span>
+</div>
+
+<p class="muted">
+El sistema operativo inteligente para pequeños negocios.
+</p>
+
+<input id="email" type="email" placeholder="Email">
+
+<input id="password" type="password" placeholder="Contraseña">
+
+<div class="actions">
+<button onclick="login()">Iniciar sesión</button>
+<button class="secondary" onclick="signup()">Crear cuenta</button>
+</div>
+
+<div id="authmsg"></div>
+
+</div>
+
+
+<!-- APP -->
+<main id="app" class="hidden">
+
+<div class="card top">
+
+<div>
+<div class="logo">IMPULSE <span>AI</span></div>
+<div id="businessLabel" class="muted"></div>
+</div>
+
+<button class="secondary" onclick="logout()">Cerrar sesión</button>
+
+</div>
+
+
+<!-- CREAR NEGOCIO -->
+<div id="setup" class="card hidden">
+
+<h2>Crear negocio</h2>
+
+<p class="muted">
+Configurá tu negocio para comenzar.
+</p>
+
+<input id="bizName" placeholder="Nombre del negocio">
+
+<input id="bizSlug" placeholder="Slug: mi-negocio">
+
+<select id="bizType">
+
+<option value="">Tipo de negocio</option>
+<option>Comercio</option>
+<option>Supermercado</option>
+<option>Tienda de motos</option>
+<option>Barbería</option>
+<option>Restaurante</option>
+<option>Otro</option>
+
+</select>
+
+<button onclick="createBusiness()">Crear negocio</button>
+
+<div id="bizmsg"></div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="hidden">
+
+<div class="grid">
+
+<div class="card stat">
+<span class="muted">Productos</span>
+<strong id="statProducts">0</strong>
+</div>
+
+<div class="card stat">
+<span class="muted">Clientes</span>
+<strong id="statCustomers">0</strong>
+</div>
+
+<div class="card stat">
+<span class="muted">Pedidos</span>
+<strong id="statOrders">0</strong>
+</div>
+
+<div class="card stat">
+<span class="muted">Ventas pagadas</span>
+<strong id="statSales">$0</strong>
+</div>
+
+</div>
+
+
+<!-- PRODUCTOS -->
+
+<div class="card">
+
+<div class="top">
+
+<div>
+<h2>Productos</h2>
+<div class="muted">
+Catálogo de productos de tu negocio
+</div>
+</div>
+
+<button onclick="openProduct()">
++ Nuevo producto
+</button>
+
+</div>
+
+
+<div class="grid">
+
+<input
+id="search"
+placeholder="Buscar producto..."
+oninput="renderProducts()"
+>
+
+<select id="filterCat" onchange="renderProducts()">
+
+<option value="">Todas las categorías</option>
+
+</select>
+
+</div>
+
+
+<div style="overflow:auto">
+
+<table class="table">
+
+<thead>
+
+<tr>
+<th>Producto</th>
+<th>Categoría</th>
+<th>Precio</th>
+<th>Stock</th>
+<th>Estado</th>
+<th>Acciones</th>
+</tr>
+
+</thead>
+
+<tbody id="productsBody"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- MODAL PRODUCTO -->
+
+<div id="modal" class="modal hidden">
+
+<div class="modalbox card">
+
+<div class="top">
+
+<h2 id="modalTitle">
+Nuevo producto
+</h2>
+
+<button class="secondary" onclick="closeProduct()">
+X
+</button>
+
+</div>
+
+
+<input id="pName" placeholder="Nombre del producto *">
+
+<textarea id="pDesc" placeholder="Descripción"></textarea>
+
+
+<div class="grid">
+
+<input id="pSku" placeholder="SKU">
+
+<input id="pPrice" type="number" step="0.01" placeholder="Precio">
+
+<input id="pStock" type="number" placeholder="Stock">
+
+<input id="pCategory" placeholder="Categoría">
+
+</div>
+
+
+<input
+id="pImage"
+placeholder="URL de imagen (opcional)"
+>
+
+
+<select id="pActive">
+
+<option value="true">Activo</option>
+
+<option value="false">Inactivo</option>
+
+</select>
+
+
+<div class="actions">
+
+<button onclick="saveProduct()">
+Guardar producto
+</button>
+
+<button class="secondary" onclick="closeProduct()">
+Cancelar
+</button>
+
+</div>
+
+
+<div id="productMsg"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+"https://ksuoodeqtjzjyuxkphsy.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF";
+
+const sb =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+let user = null;
+let business = null;
+let products = [];
+let editingId = null;
+
+
+const $ = id =>
+document.getElementById(id);
+
+
+function message(id,text){
+
+$(id).innerHTML =
+text
+? `<div class="msg">${text}</div>`
+: "";
+
+}
+
+
+function money(value){
+
+return new Intl.NumberFormat(
+"es-AR",
+{
+style:"currency",
+currency:"ARS"
+}
+).format(Number(value)||0);
+
+}
+
+
+async function signup(){
+
+const email =
+$("email").value.trim();
+
+const password =
+$("password").value;
+
+if(!email || password.length < 6){
+
+return message(
+"authmsg",
+"Completá email y una contraseña de al menos 6 caracteres."
+);
+
+}
+
+
+const {data,error} =
+await sb.auth.signUp({
+
+email,
+password,
+
+options:{
+emailRedirectTo:location.origin
+}
+
+});
+
+
+if(error){
+
+return message(
+"authmsg",
+error.message
+);
+
+}
+
+
+if(data.session){
+
+await start();
+
+}else{
+
+message(
+"authmsg",
+"Cuenta creada. Revisá tu email para confirmar la cuenta."
+);
+
+}
+
+}
+
+
+async function login(){
+
+const {data,error} =
+await sb.auth.signInWithPassword({
+
+email:$("email").value,
+password:$("password").value
+
+});
+
+
+if(error){
+
+return message(
+"authmsg",
+error.message
+);
+
+}
+
+await start();
+
+}
+
+
+async function logout(){
+
+await sb.auth.signOut();
+
+location.reload();
+
+}
+
+
+async function start(){
+
+const {data} =
+await sb.auth.getUser();
+
+user =
+data.user;
+
+if(!user)return;
+
+
+$("auth").classList.add("hidden");
+
+$("app").classList.remove("hidden");
+
+await loadBusiness();
+
+}
+
+
+async function loadBusiness(){
+
+const {data,error} =
+await sb
+.from("businesses")
+.select("*")
+.order("created_at",{ascending:true})
+.limit(1)
+.maybeSingle();
+
+
+if(error){
+
+return message(
+"authmsg",
+error.message
+);
+
+}
+
+
+if(!data){
+
+$("setup").classList.remove("hidden");
+
+return;
+
+}
+
+
+business =
+data;
+
+$("setup").classList.add("hidden");
+
+$("dashboard").classList.remove("hidden");
+
+$("businessLabel").textContent =
+data.name;
+
+await loadAll();
+
+}
+
+
+async function createBusiness(){
+
+const name =
+$("bizName").value.trim();
+
+const slug =
+$("bizSlug")
+.value
+.trim()
+.toLowerCase()
+.replace(/[^a-z0-9-]/g,"-");
+
+
+if(!name || !slug){
+
+return message(
+"bizmsg",
+"Completá nombre y slug."
+);
+
+}
+
+
+const {error} =
+await sb.rpc(
+"create_business",
+{
+p_name:name,
+p_slug:slug,
+p_business_type:$("bizType").value || null
+}
+);
+
+
+if(error){
+
+return message(
+"bizmsg",
+error.message
+);
+
+}
+
+
+await loadBusiness();
+
+}
+
+
+async function loadAll(){
+
+const [p,c,o] =
+await Promise.all([
+
+sb
+.from("products")
+.select("*")
+.eq("business_id",business.id)
+.order("created_at",{ascending:false}),
+
+sb
+.from("customers")
+.select("id",{count:"exact",head:true})
+.eq("business_id",business.id),
+
+sb
+.from("orders")
+.select("id,total,payment_status")
+.eq("business_id",business.id)
+
+]);
+
+
+products =
+p.data || [];
+
+
+$("statProducts").textContent =
+products.length;
+
+
+$("statCustomers").textContent =
+c.count || 0;
+
+
+const orders =
+o.data || [];
+
+
+$("statOrders").textContent =
+orders.length;
+
+
+const sales =
+orders
+.filter(x => x.payment_status === "paid")
+.reduce(
+(sum,x) =>
+sum + Number(x.total || 0),
+0
+);
+
+
+$("statSales").textContent =
+money(sales);
+
+
+fillCategories();
+
+renderProducts();
+
+}
+
+
+function fillCategories(){
+
+const current =
+$("filterCat").value;
+
+const categories =
+[
+...new Set(
+products
+.map(p => p.category)
+.filter(Boolean)
+)
+].sort();
+
+
+$("filterCat").innerHTML =
+'<option value="">Todas las categorías</option>' +
+
+categories
+.map(
+c => `<option>${esc(c)}</option>`
+)
+.join("");
+
+
+$("filterCat").value =
+current;
+
+}
+
+
+function renderProducts(){
+
+const query =
+$("search")
+.value
+.toLowerCase();
+
+const category =
+$("filterCat").value;
+
+
+const list =
+products.filter(p =>
+
+(
+!query ||
+
+[
+p.name,
+p.sku,
+p.category
+]
+.join(" ")
+.toLowerCase()
+.includes(query)
+
+)
+
+&&
+
+(
+!category ||
+p.category === category
+)
+
+);
+
+
+$("productsBody").innerHTML =
+
+list.length
+
+?
+
+list.map(p => `
+
+<tr>
+
+<td>
+<b>${esc(p.name)}</b>
+<br>
+<small class="muted">
+${esc(p.sku || "Sin SKU")}
+</small>
+</td>
+
+<td>
+${esc(p.category || "—")}
+</td>
+
+<td>
+${money(p.price)}
+</td>
+
+<td>
+${p.stock}
+</td>
+
+<td>
+<span class="badge">
+${p.active ? "Activo" : "Inactivo"}
+</span>
+</td>
+
+<td>
+
+<div class="actions">
+
+<button
+class="secondary"
+onclick="openProduct('${p.id}')"
+>
+Editar
+</button>
+
+<button
+class="danger"
+onclick="deleteProduct('${p.id}')"
+>
+Eliminar
+</button>
+
+</div>
+
+</td>
+
+</tr>
+
+`).join("")
+
+:
+
+`
+<tr>
+<td colspan="6" class="muted">
+No hay productos todavía.
+</td>
+</tr>
+`;
+
+}
+
+
+function openProduct(id=null){
+
+editingId =
+id;
+
+$("modal").classList.remove("hidden");
+
+message(
+"productMsg",
+""
+);
+
+
+const product =
+products.find(
+p => p.id === id
+);
+
+
+$("modalTitle").textContent =
+product
+? "Editar producto"
+: "Nuevo producto";
+
+
+$("pName").value =
+product?.name || "";
+
+$("pDesc").value =
+product?.description || "";
+
+$("pSku").value =
+product?.sku || "";
+
+$("pPrice").value =
+product?.price ?? "";
+
+$("pStock").value =
+product?.stock ?? 0;
+
+$("pCategory").value =
+product?.category || "";
+
+$("pImage").value =
+product?.image_url || "";
+
+$("pActive").value =
+String(
+product?.active ?? true
+);
+
+}
+
+
+function closeProduct(){
+
+$("modal").classList.add("hidden");
+
+editingId = null;
+
+}
+
+
+async function saveProduct(){
+
+const name =
+$("pName")
+.value
+.trim();
+
+
+if(!name){
+
+return message(
+"productMsg",
+"El nombre es obligatorio."
+);
+
+}
+
+
+const payload = {
+
+business_id:
+business.id,
+
+name:name,
+
+description:
+$("pDesc").value || null,
+
+sku:
+$("pSku").value || null,
+
+price:
+Number($("pPrice").value) || 0,
+
+stock:
+Number($("pStock").value) || 0,
+
+category:
+$("pCategory").value || null,
+
+image_url:
+$("pImage").value || null,
+
+active:
+$("pActive").value === "true"
+
+};
+
+
+let result;
+
+
+if(editingId){
+
+result =
+await sb
+.from("products")
+.update(payload)
+.eq("id",editingId)
+.eq("business_id",business.id);
+
+}else{
+
+result =
+await sb
+.from("products")
+.insert(payload);
+
+}
+
+
+if(result.error){
+
+return message(
+"productMsg",
+result.error.message
+);
+
+}
+
+
+closeProduct();
+
+await loadAll();
+
+}
+
+
+async function deleteProduct(id){
+
+if(
+!confirm(
+"¿Eliminar este producto?"
+)
+){
+
+return;
+
+}
+
+
+const {error} =
+await sb
+.from("products")
+.delete()
+.eq("id",id)
+.eq("business_id",business.id);
+
+
+if(error){
+
+return alert(
+error.message
+);
+
+}
+
+
+await loadAll();
+
+}
+
+
+function esc(value){
+
+return String(value ?? "")
+.replace(
+/[&<>"']/g,
+char =>
+({
+
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+
+}[char])
+);
+
+}
+
+
+sb.auth
+.getSession()
+.then(
+async ({data}) => {
+
+if(data.session){
+
+await start();
+
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
