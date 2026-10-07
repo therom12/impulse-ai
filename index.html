@@ -105,5 +105,15 @@ async function login(){
 async function signup(){let r=await db.auth.signUp({email:email.value,password:pass.value,emailRedirectTo:location.origin});msg.textContent=r.error?r.error.message:'Cuenta creada. Revisá tu email si pide confirmación.'}
 async function logout(){await db.auth.signOut();location.reload();}
 db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.getElementById('app').classList.add('hidden');document.getElementById('login').classList.remove('hidden');}else if(event==='SIGNED_IN'&&session){setTimeout(()=>init(),0);}});
-init();
+init();<script>
+    const SUPABASE_URL = "https://ksuoodeqtjzjyuxkphsy.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF";
+
+    const supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
+
+    console.log("Impulse AI conectado con Supabase");
+</script>
 </script></body></html>
