@@ -582,7 +582,33 @@
       </div>
     </div>
   </div>
+  <div id="setup" class="login hidden">
+  <div class="box" style="max-width:520px;margin:auto">
+    <div class="brand">IMPULSE <b>AI</b></div>
+    <h2>Configurá tu empresa</h2>
+    <p>Antes de entrar al panel, creá el negocio que vas a administrar.</p>
 
+    <div class="field">
+      <label for="business-name">Nombre de la empresa</label>
+      <input id="business-name" type="text" placeholder="Ej: Mi Empresa">
+    </div>
+
+    <div class="field">
+      <label for="business-type">Rubro</label>
+      <input id="business-type" type="text" placeholder="Ej: Comercio, supermercado, motos">
+    </div>
+
+    <button class="btn" onclick="createBusiness()">
+      Crear empresa y continuar
+    </button>
+
+    <div id="msg-setup" class="msg"></div>
+
+    <button class="secondary" style="margin-top:8px;width:100%" onclick="logout()">
+      Cerrar sesión
+    </button>
+  </div>
+</div>
   <div id="app" class="app hidden">
     <aside class="side">
       <div class="brand">IMPULSE <b>AI</b></div>
