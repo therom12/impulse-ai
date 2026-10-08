@@ -832,7 +832,7 @@ let financialAnalyses=[];products=[],orders=[];
     }
 
     async function load(){
-      let [a,b,c]=await Promise.all([
+      let [a,b,c,d,e,f]=await Promise.all([
         db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
         db.from('products').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
         db.from('orders').select('*').eq('business_id',biz.id).order('created_at',{ascending:false})
