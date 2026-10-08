@@ -1078,7 +1078,7 @@ function renderRisk(){
       }
 
       btn.disabled=true; btn.textContent='Ingresando...';
-                         alert('PASÓ LAS VALIDACIONES');
+      alert('PASÓ LAS VALIDACIONES');
       try{
         const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
         if(error){
