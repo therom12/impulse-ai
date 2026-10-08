@@ -840,8 +840,7 @@ let financialAnalyses=[];
   db.from('financial_operations').select('*').eq('business_id',biz.id).order('occurred_at',{ascending:false}).limit(100),
   db.from('financial_alerts').select('*').eq('business_id',biz.id).in('status',['open','reviewing']).order('created_at',{ascending:false}).limit(50),
   db.from('financial_analyses').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}).limit(10)
-]);
-      ]);
+  ]);
       customers=a.data||[];
       products=b.data||[];
       orders=c.data||[];
