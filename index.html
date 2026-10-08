@@ -991,7 +991,74 @@ function renderRisk(){
       return 'Puedo ayudarte con ventas, margen, clientes y cobranzas. Preguntá por cualquiera de esos indicadores.';
     }
     function sendAgent(){ const q=document.getElementById('agentInput').value.trim(); if(!q) return; addAgentMessage('user', q); document.getElementById('agentInput').value=''; setTimeout(()=>addAgentMessage('ai', agentAnswer(q)), 180); }
+    
+    async function createBusiness(){
+  const name=document.getElementById('business-name').value.trim();
+  const type=document.getElementById('business-type').value.trim();
 
+  if(!name){
+    setMsg('Ingresá el nombre de tu empresa.','error','setup');
+    return;
+  }
+
+  const btn=document.querySelector('#setup .btn');
+  btn.disabled=true;
+  btn.textContent='Creando...';
+
+  try{
+    const {data:{user:currentUser},error:userError}=await db.auth.getUser();
+
+    if(userError) throw userError;
+    if(!currentUser) throw new Error('Tu sesión expiró.');
+
+    const slug=
+      name.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/(^-|-$)/g,'')
+      +'-'+Date.now();
+
+    const {data:business,error:businessError}=await db
+      .from('businesses')
+      .insert({
+        name,
+        slug,
+        business_type:type||null,
+        email:currentUser.email
+      })
+      .select()
+      .single();
+
+    if(businessError) throw businessError;
+
+    const {error:memberError}=await db
+      .from('business_members')
+      .insert({
+        business_id:business.id,
+        user_id:currentUser.id,
+        role:'owner'
+      });
+
+    if(memberError) throw memberError;
+
+    user=currentUser;
+    biz=business;
+
+    document.getElementById('setup').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('biz').textContent=biz.name;
+
+    await load();
+    show('dashboard');
+
+  }catch(e){
+    setMsg(e.message||'No se pudo crear la empresa.','error','setup');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Crear empresa y continuar';
+  }
+      }
     async function login(){
       const emailValue=document.getElementById('email-login').value.trim();
       const passValue=document.getElementById('pass-login').value;
