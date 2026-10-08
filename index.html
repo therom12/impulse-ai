@@ -773,7 +773,9 @@
     const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
     const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
     var db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-    let user,biz,customers=[],products=[],orders=[];
+    let user,biz,customers=[],let financialOperations=[];
+let financialAlerts=[];
+let financialAnalyses=[];products=[],orders=[];
     const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado'};
     const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).format(Number(x||0));
