@@ -118,4 +118,25 @@ init();<script>
 
     console.log("Impulse AI conectado con Supabase");
 </script>
+        <button onclick="probarSupabase()">
+    🔌 Probar conexión con Supabase
+</button>
+
+<script>
+async function probarSupabase() {
+    const { data, error } = await supabaseClient
+        .from("businesses")
+        .select("id, name")
+        .limit(1);
+
+    if (error) {
+        alert("❌ Error de conexión: " + error.message);
+        console.error(error);
+        return;
+    }
+
+    alert("✅ Supabase conectado correctamente");
+    console.log(data);
+}
+</script>
 </script></body></html>
