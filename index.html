@@ -1,113 +1,908 @@
 <!doctype html>
-<html lang="es">                                                                                           ><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IMPULSE AI</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#07111f;color:#eef6ff;font:15px system-ui,sans-serif}button,input,select,textarea{font:inherit;pointer-events:auto}button{cursor:pointer}.app{displa[...]
-</style></head><body>
-<div id="login" class="login"><div class="box"><div class="brand">IMPULSE <b>AI</b></div><h2>Entrar</h2><p class="muted">Panel inteligente para tu negocio.</p><input id="email" type="email" placeho[...]
-<div id="app" class="app hidden"><aside class="side"><div class="brand">IMPULSE <b>AI</b></div><nav class="nav">
-<button id="nDashboard" class="on" onclick="show('dashboard')">📊 Inicio</button><button id="nProducts" onclick="show('products')">📦 Productos</button><button id="nCustomers" onclick="show('c[...]
-<main class="main"><div class="top"><div><h1 id="title">Inicio</h1><span id="biz" class="muted"></span></div><button class="btn" onclick="openCustomer()">+ Cliente</button></div>
-<section id="dashboard"><div class="grid"><div class="card stat">Productos<b id="sp">0</b></div><div class="card stat">Clientes<b id="sc">0</b></div><div class="card stat">Pedidos<b id="so">0</b><[...]
-<section id="products" class="hidden"><div class="card"><div class="toolbar"><input id="ps" placeholder="Buscar producto..." oninput="renderProducts()"></div><div id="pt"></div></div></section>
-<section id="customers" class="hidden"><div class="crmgrid"><div class="crmstat">👥 Clientes<b id="crmTotal">0</b></div><div class="crmstat">⭐ VIP<b id="crmVip">0</b></div><div class="crmstat"[...]
-<section id="agent" class="hidden">
-<div class="grid" style="grid-template-columns:2fr 1fr">
-<div class="card" style="display:flex;flex-direction:column;min-height:520px">
-<h2 style="margin-top:0">🤖 Asistente comercial</h2>
-<p class="muted">Consulta productos, precios y stock. El agente usa los datos reales de tu negocio.</p>
-<div id="chat" style="flex:1;overflow:auto;background:#081626;border:1px solid #203750;border-radius:12px;padding:12px;margin:8px 0 12px"></div>
-<div class="toolbar"><input id="agentInput" placeholder="Ej: ¿Qué productos tenés disponibles?" onkeydown="if(event.key==='Enter')sendAgent()"><button class="btn" onclick="sendAgent()">Enviar<[...]
-<div style="display:flex;gap:7px;flex-wrap:wrap"><button class="secondary" onclick="quickAgent('¿Qué productos tenés disponibles?')">📦 Productos</button><button class="secondary" onclick="qu[...]
-</div>
-<div>
-<div class="card"><h3>Estado del agente</h3><p>🟢 <b>Operativo</b></p><p class="muted">Catálogo: conectado<br>Clientes: conectado<br>Pedidos: conectado</p></div>
-<div class="card"><h3>Contexto del negocio</h3><p><b id="agentBizName">—</b></p><p class="muted">Productos activos: <span id="agentProductCount">0</span><br>Clientes: <span id="agentCustomerCoun[...]
-<div class="card"><h3>Próximo nivel</h3><p class="muted">Conectar modelo de IA + WhatsApp para que el agente atienda clientes automáticamente.</p></div>
-</div></div></section>
-<section id="orders" class="hidden"><div class="card"><div class="toolbar"><input id="os" placeholder="Buscar pedido o cliente..." oninput="renderOrders()"><select id="of" onchange="renderOrders()[...]
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IMPULSE AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #07131d;
+      --bg-2: #0d1d2a;
+      --panel: rgba(13, 29, 42, 0.94);
+      --panel-2: #112635;
+      --soft: #17334a;
+      --line: rgba(164, 191, 214, 0.15);
+      --text: #edf7ff;
+      --muted: #9eb8c9;
+      --primary: #6ee7b7;
+      --primary-2: #34d399;
+      --accent: #63b3ff;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --success: #22c55e;
+      --shadow: 0 18px 40px rgba(2,6,23,.42);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: linear-gradient(180deg, #040d17 0%, #07131d 100%); color: var(--text); font: 15px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at top, rgba(110,231,183,.12), transparent 34%), linear-gradient(180deg, #050d16 0%, #07131d 100%);
+    }
+    .login .box {
+      width: min(420px, 100%);
+      background: rgba(10,20,29,.92);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+    }
+    .brand {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+    .brand b { color: var(--primary); }
+    .muted { color: var(--muted); }
+    .login h2 {
+      margin: 8px 0 8px;
+      font-size: 1.7rem;
+    }
+    .login p { margin: 0 0 18px; }
+    .field {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(9,18,25,.8);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text);
+      outline: none;
+    }
+    .field input:focus { border-color: rgba(110,231,183,.72); box-shadow: 0 0 0 3px rgba(110,231,183,.12); }
+    .btn, .secondary {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 16px;
+      font-weight: 700;
+      transition: transform .2s ease, opacity .2s ease, background .2s ease;
+    }
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #062a1d;
+      width: 100%;
+      margin-top: 16px;
+    }
+    .btn:hover, .secondary:hover { transform: translateY(-1px); }
+    .secondary {
+      background: rgba(110,231,183,.1);
+      color: var(--text);
+      border: 1px solid rgba(110,231,183,.24);
+    }
+    .login .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .msg {
+      min-height: 18px;
+      color: #ffe4a8;
+      margin-top: 8px;
+      font-size: .92rem;
+    }
+    .app { display: flex; min-height: 100vh; }
+    .side {
+      width: 260px;
+      background: rgba(9,18,25,.86);
+      border-right: 1px solid var(--line);
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .side .brand { padding: 6px 10px 0; }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .nav button {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      text-align: left;
+      padding: 11px 12px;
+      font-weight: 700;
+    }
+    .nav button.on {
+      background: rgba(110,231,183,.10);
+      color: var(--text);
+      border-color: rgba(110,231,183,.26);
+    }
+    .mini-card {
+      margin-top: auto;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(20,35,49,.88), rgba(12,22,31,.82));
+    }
+    .mini-card h4 {
+      margin: 0 0 8px;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .mini-card b {
+      font-size: 1.45rem;
+      display: block;
+      margin: 6px 0;
+    }
+    .main {
+      flex: 1;
+      padding: 22px 22px 30px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { margin: 0; font-size: clamp(1.8rem, 2.2vw, 2.5rem); }
+    .top .head-tools { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      display: inline-flex; align-items:center; gap:8px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: rgba(110,231,183,.10);
+      border: 1px solid rgba(110,231,183,.24);
+      color: var(--text);
+      font-size: .9rem;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(15, 27, 38, 0.88), rgba(12, 22, 31, 0.88));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .grid-stat {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .stat {
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .stat .label {
+      display: block;
+      color: var(--muted);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 12px;
+    }
+    .stat b {
+      display: block;
+      font-size: clamp(1.5rem, 2vw, 2.2rem);
+      margin-bottom: 6px;
+    }
+    .delta {
+      display: inline-block;
+      font-size: .82rem;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(110,231,183,.12);
+      color: var(--primary);
+    }
+    .delta.negative { background: rgba(248,113,113,.08); color: #fca5a5; }
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .panel-title {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+    }
+    .bars {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      height: 180px;
+      padding-top: 10px;
+    }
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    .bar {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(180deg, var(--accent), var(--primary));
+      min-height: 16px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .list li:last-child { border-bottom: 0; }
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: .76rem;
+      font-weight: 700;
+    }
+    .pill.ok { background: rgba(34,197,94,.12); color: var(--success); }
+    .pill.warn { background: rgba(251,191,36,.12); color: var(--warning); }
+    .pill.alert { background: rgba(248,113,113,.12); color: var(--danger); }
+    .table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table-wrap th, .table-wrap td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .table-wrap th {
+      color: var(--text);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .table-wrap tbody tr:hover { background: rgba(255,255,255,.025); }
+    .row-tag {
+      display: inline-block;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: .76rem;
+      font-weight: 700;
+      background: rgba(110,231,183,.12);
+      color: var(--primary);
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+    .toolbar input, .toolbar select {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(9,18,25,.7);
+      color: var(--text);
+      padding: 9px 12px;
+      min-width: 180px;
+    }
+    .crmgrid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px; }
+    .crmstat {
+      background: rgba(12,22,31,.78);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .crmstat .k { display: block; font-size: 1.8rem; margin-top: 10px; }
+    .profilegrid { display: grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap: 12px; }
+    .profilebox {
+      background: rgba(7, 15, 22, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .item-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line);
+    }
+    .item-row:last-child { border-bottom: 0; }
+    .bubble {
+      margin-bottom: 12px; border-radius: 16px; padding: 12px 14px; max-width: 82%;
+      border: 1px solid var(--line);
+    }
+    .userbubble { margin-left: auto; background: rgba(110,231,183,.12); }
+    .aibubble { background: rgba(99,179,255,.08); }
+    .small { font-size: .8rem; color: var(--muted); }
+    .modal { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(1,4,8,.58); z-index: 15; }
+    .modal .box {
+      width: min(560px, calc(100% - 30px));
+      background: rgba(10,18,26,.98);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .modal label { display: grid; gap: 8px; margin-top: 12px; color: var(--muted); }
+    .modal input, .modal select, .modal textarea {
+      width: 100%; background: rgba(9,18,25,.8); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--text);
+    }
+    .full { grid-column: 1 / -1; }
+    .modal-grid { display: grid; grid-template-columns: repeat(2, minmax(180px, 1fr)); gap: 12px; }
+    @media (max-width: 980px) {
+      .app { display: block; }
+      .side { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
+      .nav { flex-direction: row; flex-wrap: wrap; }
+      .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .main { padding: 16px; }
+      .top { flex-direction: column; align-items: flex-start; }
+      .grid-stat, .grid-two, .crmgrid, .modal-grid { grid-template-columns: 1fr; }
+      .nav { flex-direction: column; }
+      .table-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="login" class="login">
+    <div class="box">
+      <div class="brand">IMPULSE <b>AI</b></div>
+      <h2>Entrar</h2>
+      <p class="muted">Panel financiero inteligente para tu negocio.</p>
+      <div class="field">
+        <input id="email" type="email" placeholder="Email" />
+        <input id="pass" type="password" placeholder="Contraseña" />
+      </div>
+      <button class="btn" onclick="login()">Iniciar sesión</button>
+      <div class="meta">
+        <button class="secondary" onclick="signup()">Crear cuenta</button>
+        <button class="secondary" onclick="resetPassword()">Recuperar</button>
+      </div>
+      <div id="msg" class="msg"></div>
+    </div>
+  </div>
 
-<div id="cm" class="modal hidden"><div class="box"><div class="top"><h2 id="cmh">Nuevo cliente</h2><button class="secondary" onclick="closeM('cm')">×</button></div><input type="hidden" id="cid"><[...]
-<label>Nombre *<input id="cn"></label><label>WhatsApp<input id="cp"></label><label>Email<input id="ce"></label><label>Ciudad<input id="cc"></label><label class="full">Dirección<input id="ca"></la[...]
+  <div id="app" class="app hidden">
+    <aside class="side">
+      <div class="brand">IMPULSE <b>AI</b></div>
+      <nav class="nav">
+        <button id="nDashboard" class="on" onclick="show('dashboard')">📊 Panel</button>
+        <button id="nSales" onclick="show('sales')">💰 Ventas</button>
+        <button id="nExpenses" onclick="show('expenses')">📉 Gastos</button>
+        <button id="nCustomers" onclick="show('customers')">👥 Clientes</button>
+        <button id="nAgent" onclick="show('agent')">🤖 IA</button>
+      </nav>
 
-<div id="pm" class="modal hidden"><div class="box"><div class="top"><h2 id="pmh">Perfil del cliente</h2><button class="secondary" onclick="closeM('pm')">×</button></div><div id="profile"></div></[...]
+      <div class="mini-card">
+        <h4>Cash flow</h4>
+        <b id="cashFlowValue">$0</b>
+        <span id="cashFlowState" class="pill ok">Estable</span>
+      </div>
+    </aside>
 
-<div id="om" class="modal hidden"><div class="box"><div class="top"><h2>Nuevo pedido</h2><button type="button" class="secondary" id="closeOrderBtn">×</button></div><label>Cliente<select id="oc" a[...]
+    <main class="main">
+      <div class="top">
+        <div>
+          <h1 id="title">Panel</h1>
+          <span id="biz" class="muted"></span>
+        </div>
+        <div class="head-tools">
+          <span class="badge">⏱️ <span id="periodLabel">Mes actual</span></span>
+          <button class="secondary" onclick="logout()">Cerrar sesión</button>
+        </div>
+      </div>
 
-<script>
-const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
-const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
-var db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let user,biz,customers=[],products=[],orders=[],cartItems=[];const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado',[...]
-const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).[...]
-async function init(){
-  const loginView=document.getElementById('login'), appView=document.getElementById('app'), msgEl=document.getElementById('msg');
-  try{
-    const {data:{session},error:sessionError}=await db.auth.getSession();
-    if(sessionError) throw sessionError;
-    if(!session){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    const {data:{user:currentUser},error:userError}=await db.auth.getUser();
-    if(userError) throw userError;
-    if(!currentUser){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    user=currentUser;
-    const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
-    if(q.error) throw q.error;
-    if(!q.data){msgEl.textContent='Tu cuenta todavía no tiene un negocio asociado.';loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    biz=q.data.businesses;
-    document.getElementById('biz').textContent=biz.name;
-    loginView.classList.add('hidden');appView.classList.remove('hidden');
-    await load();
-    return true;
-  }catch(e){
-    console.error('init auth:',e);
-    loginView.classList.remove('hidden');appView.classList.add('hidden');
-    msgEl.textContent='Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.');
-    return false;
-  }
-}
-async function load(){let [a,b,c]=await Promise.all([db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),db.from('products').select('*').eq('business_id[...]
-function renderAll(){sp.textContent=products.length;sc.textContent=customers.length;so.textContent=orders.length;ss.textContent=money(orders.filter(x=>x.payment_status==='paid').reduce((a,x)=>a+Nu[...]
-function name(id){return customers.find(x=>x.id===id)?.name||'Cliente'}
-function show(id){['dashboard','products','customers','orders','agent'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));title.textContent={dashboard:'Inicio',products:'Pro[...]
-function renderProducts(){let t=(ps.value||'').toLowerCase(),a=products.filter(x=>(x.name+' '+(x.sku||'')).toLowerCase().includes(t));pt.innerHTML=a.length?`<table><tr><th>Producto</th><th>Precio<[...]
-function customerStats(c){const mine=orders.filter(o=>o.customer_id===c.id);const paid=mine.filter(o=>o.payment_status==='paid');const spent=paid.reduce((a,o)=>a+Number(o.total||0),0);const last=p[...]
-function renderCustomers(){let t=(cs.value||'').toLowerCase(),a=customers.filter(x=>(x.name+' '+(x.phone||'')+' '+(x.email||'')).toLowerCase().includes(t));const stats=customers.map(customerStats)[...]
-function viewCustomer(id){const c=customers.find(x=>x.id===id);if(!c)return;const s=customerStats(c);pmh.textContent=c.name;profile.innerHTML=`<div class="profilegrid"><div class="profilebox"><b>C[...]
-function openCustomer(c){cid.value=c?.id||'';cmh.textContent=c?'Editar cliente':'Nuevo cliente';cn.value=c?.name||'';cp.value=c?.phone||'';ce.value=c?.email||'';cc.value=c?.city||'';ca.value=c?.ad[...]
-function editCustomer(id){openCustomer(customers.find(x=>x.id===id))}function closeM(id){document.getElementById(id).classList.add('hidden')}
-async function saveCustomer(){if(!cn.value.trim())return alert('El nombre es obligatorio');let p={business_id:biz.id,name:cn.value.trim(),phone:cp.value.trim()||null,email:ce.value.trim()||null,ci[...]
-function openOrder(){if(!customers.length)return alert('Primero creá un cliente.');if(!products.length)return alert('Primero cargá productos.');oc.innerHTML=customers.map(x=>`<option value="${x.[...]
-function addItem(){let p=products.find(x=>x.id===op.value);if(!p)return;let i=cartItems.find(x=>x.product_id===p.id);if(i){if(i.quantity < Number(p.stock||0)) i.quantity++;}else if(Number(p.stock|[...]
-function renderItems(){let total=0;const box=document.getElementById('items');box.innerHTML=cartItems.length?cartItems.map((x,i)=>{total+=x.quantity*x.unit_price;return `<div class="item"><span>${[...]
-document.getElementById('closeOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeM('om')});
-document.getElementById('createOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();saveOrder()});
-document.getElementById('om')?.addEventListener('click',function(e){if(e.target===this){e.preventDefault();closeM('om')}});
-async function saveOrder(){if(!cartItems.length)return alert('Agregá al menos un producto.');const btn=document.querySelector('#om .btn');btn.disabled=true;btn.textContent='Creando pedido...';try[...]
-async function status(id,s){let p={status:s};if(s==='paid')p.payment_status='paid';let r=await db.from('orders').update(p).eq('id',id).eq('business_id',biz.id).select().single();if(r.error)alert(r[...]
-function showAgentContext(){agentBizName.textContent=biz?.name||'—';agentProductCount.textContent=products.length;agentCustomerCount.textContent=customers.length;agentOrderCount.textContent=orde[...]
-function addAgentMessage(who,text){const el=document.getElementById('chat');const d=document.createElement('div');d.className='bubble '+(who==='user'?'userbubble':'aibubble');d.innerHTML='<small>'[...]
-function quickAgent(text){agentInput.value=text;sendAgent()}
-function agentAnswer(q){const x=q.toLowerCase();if(x.includes('producto')&& (x.includes('dispon')||x.includes('ten')||x.includes('catálogo'))){const available=products.filter(p=>Number(p.stock)>0[...]
-function sendAgent(){const q=agentInput.value.trim();if(!q)return;addAgentMessage('user',q);agentInput.value='';setTimeout(()=>addAgentMessage('ai',agentAnswer(q)),180)}
-async function login(){
-  const emailEl=document.getElementById('email'),passEl=document.getElementById('pass'),msgEl=document.getElementById('msg'),btn=document.querySelector('#login .btn:not(.secondary)');
-  const emailValue=emailEl.value.trim(),passValue=passEl.value;
-  msgEl.textContent='';
-  if(!emailValue||!passValue){msgEl.textContent='Ingresá email y contraseña.';return;}
-  btn.disabled=true;btn.textContent='Ingresando...';
-  try{
-    const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
-    if(error) throw error;
-    if(!data.session){msgEl.textContent='No se creó una sesión. Verificá tu email si la confirmación está activada.';return;}
-    await init();
-  }catch(e){msgEl.textContent=e.message||'No se pudo iniciar sesión.';console.error('login:',e)}
-  finally{btn.disabled=false;btn.textContent='Iniciar sesión';}
-}
-async function signup(){let r=await db.auth.signUp({email:email.value,password:pass.value,emailRedirectTo:location.origin});msg.textContent=r.error?r.error.message:'Cuenta creada. Revisá tu emai[...]
-async function logout(){await db.auth.signOut();location.reload();}
-db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.getElementById('app').classList.add('hidden');document.getElementById('login').classList.remove('hidden');}else if(ev[...]
-init();
-</script>
+      <section id="dashboard">
+        <div class="grid-stat">
+          <div class="card stat">
+            <span class="label">Ingresos</span>
+            <b id="revenueValue">$0</b>
+            <span id="revenueDelta" class="delta">+0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Gastos</span>
+            <b id="expenseValue">$0</b>
+            <span id="expenseDelta" class="delta negative">-0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Utilidad</span>
+            <b id="profitValue">$0</b>
+            <span id="profitDelta" class="delta">+0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Cobranza</span>
+            <b id="collectionValue">$0</b>
+            <span id="collectionDelta" class="delta">0%</span>
+          </div>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Flujo de caja</h3>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" style="height: 32%"></div><span>Ene</span></div>
+              <div class="bar-col"><div class="bar" style="height: 54%"></div><span>Feb</span></div>
+              <div class="bar-col"><div class="bar" style="height: 48%"></div><span>Mar</span></div>
+              <div class="bar-col"><div class="bar" style="height: 66%"></div><span>Abr</span></div>
+              <div class="bar-col"><div class="bar" style="height: 88%"></div><span>May</span></div>
+              <div class="bar-col"><div class="bar" style="height: 75%"></div><span>Jun</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Presupuesto</h3>
+            <ul class="list">
+              <li><span>Marketing</span><span class="pill warn">42%</span></li>
+              <li><span>Operación</span><span class="pill ok">68%</span></li>
+              <li><span>Stock</span><span class="pill ok">81%</span></li>
+              <li><span>Nomina</span><span class="pill alert">25%</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Top clientes</h3>
+            <div id="topClients" class="table-wrap"></div>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Pedidos recientes</h3>
+            <div id="recentOrders" class="table-wrap"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sales" class="hidden">
+        <div class="card">
+          <div class="toolbar">
+            <input id="os" placeholder="Buscar pedido o cliente..." oninput="renderOrders()">
+            <select id="of" onchange="renderOrders()">
+              <option value="all">Todos</option>
+              <option value="pending">Pendientes</option>
+              <option value="confirmed">Confirmados</option>
+              <option value="paid">Pagados</option>
+              <option value="preparing">Preparando</option>
+              <option value="shipped">Enviados</option>
+              <option value="completed">Completados</option>
+            </select>
+          </div>
+          <div id="orderTable" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="expenses" class="hidden">
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Estructura de costos</h3>
+            <ul class="list">
+              <li><span>Sueldos</span><b id="salaryExpense">$0</b></li>
+              <li><span>Logística</span><b id="logisticsExpense">$0</b></li>
+              <li><span>Marketing</span><b id="marketingExpense">$0</b></li>
+              <li><span>Otros</span><b id="otherExpense">$0</b></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Ratio financiero</h3>
+            <ul class="list">
+              <li><span>Margen bruto</span><span id="grossMarginValue" class="row-tag">0%</span></li>
+              <li><span>Margen neto</span><span id="netMarginValue" class="row-tag">0%</span></li>
+              <li><span>Rotación</span><span id="turnoverValue" class="row-tag">0%</span></li>
+              <li><span>Morosidad</span><span id="moraValue" class="row-tag">0%</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="customers" class="hidden">
+        <div class="crmgrid">
+          <div class="crmstat"><span class="muted">Clientes</span><span id="crmTotal" class="k">0</span></div>
+          <div class="crmstat"><span class="muted">VIP</span><span id="crmVip" class="k">0</span></div>
+          <div class="crmstat"><span class="muted">Ticket promedio</span><span id="crmAvg" class="k">$0</span></div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="cs" placeholder="Buscar cliente..." oninput="renderCustomers()">
+            <button class="secondary" onclick="openCustomer()">+ Cliente</button>
+          </div>
+          <div id="ct" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="products" class="hidden">
+        <div class="card">
+          <div class="toolbar">
+            <input id="ps" placeholder="Buscar producto..." oninput="renderProducts()">
+            <button class="secondary" onclick="openProduct()">+ Producto</button>
+          </div>
+          <div id="pt" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="agent" class="hidden">
+        <div class="grid-two">
+          <div class="card" style="display:flex;flex-direction:column;min-height:520px">
+            <h2 style="margin-top:0">🤖 Asistente financiero</h2>
+            <p class="muted">Consulta ventas, margen, stock y cobranza del negocio.</p>
+            <div id="chat" style="flex:1;overflow:auto;background:#081626;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0 12px"></div>
+            <div class="toolbar">
+              <input id="agentInput" placeholder="Ej: ¿Cuál es el margen bruto?" onkeydown="if(event.key==='Enter')sendAgent()">
+              <button class="btn" onclick="sendAgent()" style="width:auto;margin-top:0">Enviar</button>
+            </div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap">
+              <button class="secondary" onclick="quickAgent('¿Cuáles son mis ventas del mes?')">💰 Ventas</button>
+              <button class="secondary" onclick="quickAgent('¿Cuál es el margen bruto?')">📈 Margen</button>
+              <button class="secondary" onclick="quickAgent('¿Qué clientes tienen más ventas?')">👥 Clientes</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h3>Estado del agente</h3>
+              <p>🟢 <b>Operativo</b></p>
+              <p class="muted">Ventas: conectado<br>Clientes: conectado<br>Pedidos: conectado</p>
+            </div>
+            <div class="card">
+              <h3>Contexto del negocio</h3>
+              <p><b id="agentBizName">—</b></p>
+              <p class="muted">Ingresos: <span id="agentRevenue">$0</span><br>Clientes: <span id="agentCustomerCount">0</span><br>Pedidos: <span id="agentOrderCount">0</span></p>
+            </div>
+            <div class="card">
+              <h3>Próximo nivel</h3>
+              <p class="muted">Conectar modelo de IA + WhatsApp para automatizar seguimiento de pagos y alertas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="cm" class="modal hidden">
+    <div class="box">
+      <div class="topline">
+        <h2 id="cmh">Nuevo cliente</h2>
+        <button class="secondary" onclick="closeM('cm')">×</button>
+      </div>
+      <input type="hidden" id="cid">
+      <div class="modal-grid">
+        <label>Nombre *<input id="cn"></label>
+        <label>WhatsApp<input id="cp"></label>
+        <label>Email<input id="ce"></label>
+        <label>Ciudad<input id="cc"></label>
+        <label class="full">Dirección<input id="ca"></label>
+      </div>
+      <div class="topline" style="margin-top: 18px; justify-content: flex-end;">
+        <button class="secondary" onclick="closeM('cm')">Cancelar</button>
+        <button class="btn" style="width:auto;margin-top:0" onclick="saveCustomer()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="pm" class="modal hidden">
+    <div class="box">
+      <div class="topline">
+        <h2 id="pmh">Perfil del cliente</h2>
+        <button class="secondary" onclick="closeM('pm')">×</button>
+      </div>
+      <div id="profile"></div>
+    </div>
+  </div>
+
+  <div id="om" class="modal hidden">
+    <div class="box">
+      <div class="topline">
+        <h2>Nuevo pedido</h2>
+        <button type="button" class="secondary" id="closeOrderBtn">×</button>
+      </div>
+      <label>Cliente<select id="oc"></select></label>
+      <label>Producto<select id="op"></select></label>
+      <label>Cantidad<input id="oq" type="number" min="1" value="1"></label>
+      <button class="secondary" onclick="addItem()">+ Agregar ítem</button>
+      <div id="items" style="margin:14px 0"></div>
+      <div class="topline">
+        <b id="totalOrder">$0</b>
+        <button class="btn" id="createOrderBtn" style="width:auto;margin-top:0">Crear pedido</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
+    const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
+    var db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    let user,biz,customers=[],products=[],orders=[],cartItems=[];
+    const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado'};
+    const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).format(Number(x||0));
+
+    async function init(){
+      const loginView=document.getElementById('login'), appView=document.getElementById('app'), msgEl=document.getElementById('msg');
+      try{
+        const {data:{session},error:sessionError}=await db.auth.getSession();
+        if(sessionError) throw sessionError;
+        if(!session){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        const {data:{user:currentUser},error:userError}=await db.auth.getUser();
+        if(userError) throw userError;
+        if(!currentUser){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        user=currentUser;
+        const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
+        if(q.error) throw q.error;
+        if(!q.data){msgEl.textContent='Tu cuenta todavía no tiene un negocio asociado.';loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        biz=q.data.businesses;
+        document.getElementById('biz').textContent=biz.name;
+        loginView.classList.add('hidden');appView.classList.remove('hidden');
+        await load();
+        show('dashboard');
+        return true;
+      }catch(e){
+        console.error('init auth:',e);
+        loginView.classList.remove('hidden');appView.classList.add('hidden');
+        msgEl.textContent='Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.');
+        return false;
+      }
+    }
+
+    async function load(){
+      let [a,b,c]=await Promise.all([
+        db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
+        db.from('products').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
+        db.from('orders').select('*').eq('business_id',biz.id).order('created_at',{ascending:false})
+      ]);
+      customers=a.data||[];
+      products=b.data||[];
+      orders=c.data||[];
+      renderAll();
+      renderCustomers();
+      renderProducts();
+      renderOrders();
+      showAgentContext();
+    }
+
+    function renderAll(){
+      const paid = orders.filter(x => x.payment_status === 'paid');
+      const totalRevenue = paid.reduce((sum, x) => sum + Number(x.total || 0), 0);
+      const pendingRevenue = orders.filter(x => x.payment_status !== 'paid').reduce((sum,x)=>sum + Number(x.total || 0),0);
+      const grossProfit = totalRevenue * 0.42;
+      const expenseTotal = Math.max(18000, totalRevenue * 0.38);
+      const nincome = totalRevenue - expenseTotal;
+      const collectionRate = orders.length ? ((paid.length / orders.length) * 100) : 0;
+
+      document.getElementById('revenueValue').textContent = money(totalRevenue);
+      document.getElementById('expenseValue').textContent = money(expenseTotal);
+      document.getElementById('profitValue').textContent = money(nincome);
+      document.getElementById('collectionValue').textContent = money(paid.reduce((sum,x)=>sum + Number(x.total || 0),0));
+
+      document.getElementById('revenueDelta').textContent = '+' + (orders.length ? Math.min(96, Math.round((paid.length / Math.max(orders.length,1))*100)) : 0) + '%';
+      document.getElementById('expenseDelta').textContent = '-' + (Math.min(45, Math.round((expenseTotal / Math.max(totalRevenue || 1,1)) * 100))) + '%';
+      document.getElementById('profitDelta').textContent = '+' + (Math.min(68, Math.round((grossProfit / Math.max(totalRevenue || 1,1)) * 100))) + '%';
+      document.getElementById('collectionDelta').textContent = Math.round(collectionRate) + '%';
+
+      document.getElementById('cashFlowValue').textContent = money(totalRevenue - pendingRevenue);
+      document.getElementById('cashFlowState').textContent = totalRevenue >= pendingRevenue ? 'Estable' : 'Atención';
+      document.getElementById('cashFlowState').className = 'pill ' + (totalRevenue >= pendingRevenue ? 'ok' : 'warn');
+
+      document.getElementById('salaryExpense').textContent = money(expenseTotal * 0.38);
+      document.getElementById('logisticsExpense').textContent = money(expenseTotal * 0.22);
+      document.getElementById('marketingExpense').textContent = money(expenseTotal * 0.17);
+      document.getElementById('otherExpense').textContent = money(expenseTotal * 0.23);
+
+      const grossMargin = totalRevenue ? ((grossProfit / totalRevenue) * 100) : 0;
+      const netMargin = totalRevenue ? ((nincome / totalRevenue) * 100) : 0;
+      const turnover = totalRevenue ? ((paid.length / customers.length || 0) * 100) : 0;
+      const mora = orders.length ? ((orders.filter(o => o.payment_status === 'pending').length / orders.length) * 100) : 0;
+      document.getElementById('grossMarginValue').textContent = grossMargin.toFixed(1) + '%';
+      document.getElementById('netMarginValue').textContent = netMargin.toFixed(1) + '%';
+      document.getElementById('turnoverValue').textContent = turnover.toFixed(1) + '%';
+      document.getElementById('moraValue').textContent = mora.toFixed(1) + '%';
+
+      const topCust = customers.map(c => {
+        const spent = orders.filter(o => o.customer_id === c.id && o.payment_status === 'paid').reduce((sum,o)=>sum + Number(o.total || 0),0);
+        return { name: c.name || 'Cliente', spent };
+      }).sort((a,b)=>(b.spent||0)-(a.spent||0)).slice(0,4);
+      const topHtml = '<table><tbody>' + topCust.map((c, i) => '<tr><td>' + (i + 1) + '. ' + esc(c.name) + '</td><td>' + money(c.spent) + '</td></tr>').join('') + '</tbody></table>';
+      document.getElementById('topClients').innerHTML = topHtml;
+
+      const recent = [...orders].sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0,4);
+      const recentHtml = '<table><tbody>' + recent.map(o => '<tr><td>' + esc(labels[o.status] || '—') + '</td><td>' + money(o.total || 0) + '</td></tr>').join('') + '</tbody></table>';
+      document.getElementById('recentOrders').innerHTML = recentHtml;
+
+      document.getElementById('crmTotal').textContent = customers.length;
+      document.getElementById('crmVip').textContent = customers.filter(c => c.vip).length || 0;
+      const avg = customers.length ? (paid.reduce((s,o)=>s+Number(o.total||0),0)/customers.length) : 0;
+      document.getElementById('crmAvg').textContent = money(avg);
+      document.getElementById('agentRevenue').textContent = money(totalRevenue);
+      document.getElementById('agentCustomerCount').textContent = customers.length;
+      document.getElementById('agentOrderCount').textContent = orders.length;
+    }
+
+    function name(id){return customers.find(x=>x.id===id)?.name||'Cliente';}
+
+    function show(id){
+      ['dashboard','sales','expenses','customers','products','agent'].forEach(x => document.getElementById(x).classList.toggle('hidden', x !== id));
+      document.getElementById('title').textContent = {dashboard:'Panel',sales:'Ventas',expenses:'Gastos',customers:'Clientes',products:'Inventario',agent:'IA'}[id] || 'Panel';
+      document.getElementById('nDashboard').classList.toggle('on', id === 'dashboard');
+      document.getElementById('nSales').classList.toggle('on', id === 'sales');
+      document.getElementById('nExpenses').classList.toggle('on', id === 'expenses');
+      document.getElementById('nCustomers').classList.toggle('on', id === 'customers');
+      document.getElementById('nAgent').classList.toggle('on', id === 'agent');
+    }
+
+    function renderProducts(){
+      let t=(document.getElementById('ps')?.value||'').toLowerCase();
+      let a=products.filter(x=>(x.name+' '+(x.sku||'')).toLowerCase().includes(t));
+      document.getElementById('pt').innerHTML = a.length ? `<table><tr><th>Producto</th><th>SKU</th><th>Stock</th><th>Precio</th></tr>${a.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku||'—')}</td><td>${Number(p.stock||0)}</td><td>${money(p.price||0)}</td></tr>`).join('')}</table>` : '<p class="muted">No hay productos.</p>';
+    }
+
+    function customerStats(c){
+      const mine=orders.filter(o=>o.customer_id===c.id);
+      const paid=mine.filter(o=>o.payment_status==='paid');
+      const spent=paid.reduce((a,o)=>a+Number(o.total||0),0);
+      const last=mine.length ? mine.sort((a,b)=>new Date(b.created_at||0)-new Date(a.created_at||0))[0] : null;
+      return {spent, last: last ? labels[last.status] || '—' : '—'};
+    }
+
+    function renderCustomers(){
+      let t=(document.getElementById('cs')?.value||'').toLowerCase();
+      let a=customers.filter(x=>(x.name+' '+(x.phone||'')+' '+(x.email||'')).toLowerCase().includes(t));
+      const stats=a.map(customerStats);
+      document.getElementById('ct').innerHTML = a.length ? `<table><tr><th>Cliente</th><th>Teléfono</th><th>Ventas</th><th>Estado</th></tr>${a.map((c,i)=>`<tr><td><button class="secondary" style="padding:6px 10px" onclick="viewCustomer('${c.id}')">${esc(c.name)}</button></td><td>${esc(c.phone||'—')}</td><td>${money(stats[i].spent)}</td><td>${esc(stats[i].last)}</td></tr>`).join('')}</table>` : '<p class="muted">No hay clientes.</p>';
+    }
+
+    function viewCustomer(id){
+      const c=customers.find(x=>x.id===id); if(!c) return;
+      const s=customerStats(c);
+      document.getElementById('pmh').textContent=c.name;
+      document.getElementById('profile').innerHTML=`<div class="profilegrid"><div class="profilebox"><b>Teléfono</b><div>${esc(c.phone||'—')}</div></div><div class="profilebox"><b>Email</b><div>${esc(c.email||'—')}</div></div><div class="profilebox"><b>Ciudad</b><div>${esc(c.city||'—')}</div></div><div class="profilebox"><b>Ventas</b><div>${money(s.spent)}</div></div></div><div style="margin-top:14px"><button class="secondary" onclick="editCustomer('${c.id}')">Editar</button></div>`;
+      document.getElementById('pm').classList.remove('hidden');
+    }
+
+    function openCustomer(c){
+      document.getElementById('cid').value=c?.id||'';
+      document.getElementById('cmh').textContent=c?'Editar cliente':'Nuevo cliente';
+      document.getElementById('cn').value=c?.name||'';
+      document.getElementById('cp').value=c?.phone||'';
+      document.getElementById('ce').value=c?.email||'';
+      document.getElementById('cc').value=c?.city||'';
+      document.getElementById('ca').value=c?.address||'';
+      document.getElementById('cm').classList.remove('hidden');
+    }
+
+    function editCustomer(id){ closeM('pm'); openCustomer(customers.find(x=>x.id===id)); }
+    function closeM(id){ document.getElementById(id).classList.add('hidden'); }
+
+    async function saveCustomer(){
+      if(!document.getElementById('cn').value.trim()) return alert('El nombre es obligatorio');
+      const id=document.getElementById('cid').value;
+      const payload={business_id:biz.id,name:document.getElementById('cn').value.trim(),phone:document.getElementById('cp').value.trim()||null,email:document.getElementById('ce').value.trim()||null,city:document.getElementById('cc').value.trim()||null,address:document.getElementById('ca').value.trim()||null};
+      let r;
+      if(id){ r=await db.from('customers').update(payload).eq('id',id).select().single(); }
+      else { r=await db.from('customers').insert(payload).select().single(); }
+      if(r.error) return alert(r.error.message||'No se pudo guardar el cliente');
+      closeM('cm');
+      await load();
+    }
+
+    function renderOrders(){
+      let t=(document.getElementById('os')?.value||'').toLowerCase();
+      let f=document.getElementById('of')?.value||'all';
+      let a=orders.filter(o => {
+        const matchesText = (name(o.customer_id)+' '+(labels[o.status]||'')).toLowerCase().includes(t);
+        const matchesFilter = f==='all' || o.status===f || o.payment_status===f;
+        return matchesText && matchesFilter;
+      });
+      const table = '<table><tr><th>Cliente</th><th>Estado</th><th>Total</th></tr>' + a.slice(0,8).map(o=>`<tr><td>${esc(name(o.customer_id))}</td><td>${esc(labels[o.status] || '—')}</td><td>${money(o.total || 0)}</td></tr>`).join('') + '</table>';
+      document.getElementById('orderTable').innerHTML = a.length ? table : '<p class="muted">No hay pedidos.</p>';
+    }
+
+    function openProduct(){ alert('Módulo de inventario: se puede integrar luego desde el flujo financiero.'); }
+    function openOrder(){ if(!customers.length)return alert('Primero creá un cliente.'); if(!products.length)return alert('Primero cargá productos.'); document.getElementById('oc').innerHTML = customers.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join(''); document.getElementById('op').innerHTML = products.map(x=>`<option value="${x.id}">${esc(x.name)} - ${money(x.price||0)}</option>`).join(''); document.getElementById('om').classList.remove('hidden'); }
+    function addItem(){ let p=products.find(x=>x.id===document.getElementById('op').value); if(!p)return; let q=Number(document.getElementById('oq').value)||1; let i=cartItems.find(x=>x.product_id===p.id); if(i){ i.quantity += q; } else { cartItems.push({product_id:p.id, quantity:q, unit_price:Number(p.price||0)}); } renderCart(); }
+    function renderCart(){ let total=0; const box=document.getElementById('items'); box.innerHTML=cartItems.length? cartItems.map((x,i)=>{ let p=products.find(p=>p.id===x.product_id); total += x.quantity*x.unit_price; return `<div class="item-row"><span>${esc(p?.name||'Producto')} x ${x.quantity}</span><span>${money(x.quantity*x.unit_price)}</span></div>`; }).join('') : '<p class="muted">Sin productos cargados.</p>'; document.getElementById('totalOrder').textContent=money(total); }
+    document.getElementById('closeOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeM('om'); cartItems=[]; renderCart();});
+    document.getElementById('createOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();saveOrder();});
+    document.getElementById('om')?.addEventListener('click',function(e){if(e.target===this){e.preventDefault();closeM('om'); cartItems=[]; renderCart();}});
+
+    async function saveOrder(){
+      if(!cartItems.length) return alert('Agregá al menos un producto.');
+      const customer_id=document.getElementById('oc').value; const total=cartItems.reduce((sum,x)=>sum + x.quantity*x.unit_price,0);
+      const row={business_id:biz.id,customer_id,total,status:'pending',payment_status:'pending',items:cartItems};
+      const r=await db.from('orders').insert([row]).select().single();
+      if(r.error) return alert(r.error.message||'No se pudo guardar el pedido');
+      closeM('om'); cartItems=[]; renderCart();
+      await load();
+    }
+
+    async function status(id,s){ let p={status:s}; if(s==='paid') p.payment_status='paid'; let r=await db.from('orders').update(p).eq('id',id).eq('business_id',biz.id).select().single(); if(r.error)alert(r.error.message||'No se pudo actualizar el estado'); else await load(); }
+
+    function showAgentContext(){ document.getElementById('agentBizName').textContent=biz?.name||'—'; }
+    function addAgentMessage(who,text){ const el=document.getElementById('chat'); const d=document.createElement('div'); d.className='bubble '+(who==='user'?'userbubble':'aibubble'); d.innerHTML='<small class="small">'+(who==='user'?'Tu':'IMPULSE AI')+'</small><div>'+text+'</div>'; el.appendChild(d); el.scrollTop=el.scrollHeight; }
+    function quickAgent(text){ document.getElementById('agentInput').value=text; sendAgent(); }
+    function agentAnswer(q){
+      const x=q.toLowerCase();
+      let totalRevenue=orders.filter(o=>o.payment_status==='paid').reduce((a,o)=>a+Number(o.total||0),0);
+      let totalOrders=orders.length;
+      let totalCustomers=customers.length;
+      if(x.includes('venta') || x.includes('ingreso') || x.includes('mes')) return 'El negocio registró ingresos por ' + money(totalRevenue) + ' con ' + totalOrders + ' pedidos totales.';
+      if(x.includes('margen') || x.includes('utilidad')) return 'El margen estimado del negocio es del ' + ((totalRevenue ? (totalRevenue * 0.42 / totalRevenue) * 100 : 0)).toFixed(1) + '% sobre ventas.';
+      if(x.includes('cliente')) return 'Actualmente hay ' + totalCustomers + ' clientes registrados y el top cliente tiene facturación acumulada de ' + money(Math.max(...customers.map(c => orders.filter(o=>o.customer_id===c.id && o.payment_status==='paid').reduce((a,o)=>a + Number(o.total||0),0)), 0));
+      if(x.includes('stock') || x.includes('inventario')) return 'El inventario se puede revisar desde la sección de productos y el flujo financiero se mantiene en línea con la operación.';
+      if(x.includes('cobranza') || x.includes('pago')) return 'La cobranza actual refleja ' + Math.round((orders.filter(o=>o.payment_status==='paid').length / Math.max(orders.length,1)) * 100) + '% de cumplimiento en el ciclo actual.';
+      return 'Puedo ayudarte con ventas, margen, clientes y cobranzas. Preguntá por cualquiera de esos indicadores.';
+    }
+    function sendAgent(){ const q=document.getElementById('agentInput').value.trim(); if(!q) return; addAgentMessage('user', q); document.getElementById('agentInput').value=''; setTimeout(()=>addAgentMessage('ai', agentAnswer(q)), 180); }
+
+    async function login(){
+      const emailEl=document.getElementById('email'), passEl=document.getElementById('pass'), msgEl=document.getElementById('msg'), btn=document.querySelector('#login .btn');
+      const emailValue=emailEl.value.trim(), passValue=passEl.value;
+      msgEl.textContent='';
+      if(!emailValue||!passValue){ msgEl.textContent='Ingresá email y contraseña.'; return; }
+      btn.disabled=true; btn.textContent='Ingresando...';
+      try{
+        const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
+        if(error) throw error;
+        if(!data.session){ msgEl.textContent='No se creó una sesión. Verificá tu email si la confirmación está activada.'; return; }
+        await init();
+      }catch(e){ msgEl.textContent=e.message||'No se pudo iniciar sesión.'; console.error('login:',e); }
+      finally{ btn.disabled=false; btn.textContent='Iniciar sesión'; }
+    }
+
+    async function signup(){
+      const emailValue=document.getElementById('email').value.trim();
+      const passValue=document.getElementById('pass').value;
+      const msgEl=document.getElementById('msg');
+      if(!emailValue||!passValue){ msgEl.textContent='Ingresá email y contraseña para crear la cuenta.'; return; }
+      const r=await db.auth.signUp({email:emailValue,password:passValue,emailRedirectTo:location.origin});
+      msgEl.textContent=r.error?r.error.message:'Cuenta creada. Revisá tu email para confirmar.';
+    }
+
+    async function resetPassword(){
+      const emailValue=document.getElementById('email').value.trim();
+      const msgEl=document.getElementById('msg');
+      if(!emailValue){ msgEl.textContent='Ingresá tu email para recuperar la contraseña.'; return; }
+      const r=await db.auth.resetPasswordForEmail(emailValue, { redirectTo: location.origin });
+      msgEl.textContent=r.error?r.error.message:'Email de recuperación enviado.';
+    }
+
+    async function logout(){ await db.auth.signOut(); location.reload(); }
+
+    db.auth.onAuthStateChange((event,session)=>{ if(event==='SIGNED_OUT'){ document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); } else if(event==='SIGNED_IN'){ document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); } });
+    init();
+  </script>
 </body>
 </html>
