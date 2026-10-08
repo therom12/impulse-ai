@@ -110,33 +110,5 @@ db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.ge
 init();<script>
     const SUPABASE_URL = "https://ksuoodeqtjzjyuxkphsy.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF";
-
-    const supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-    );
-
-    console.log("Impulse AI conectado con Supabase");
-</script>
-        <button onclick="probarSupabase()">
-    🔌 Probar conexión con Supabase
-</button>
-
-<script>
-async function probarSupabase() {
-    const { data, error } = await supabaseClient
-        .from("businesses")
-        .select("id, name")
-        .limit(1);
-
-    if (error) {
-        alert("❌ Error de conexión: " + error.message);
-        console.error(error);
-        return;
-    }
-
-    alert("✅ Supabase conectado correctamente");
-    console.log(data);
-}
 </script>
 </script></body></html>
