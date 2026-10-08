@@ -31,163 +31,73 @@
     button { cursor: pointer; }
     .hidden { display: none !important; }
 
-    .login {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: radial-gradient(circle at 20% 50%, rgba(110,231,183,.08) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(99,179,255,.06) 0%, transparent 50%), linear-gradient(135deg, #040d17 0%, #07131d 50%, #0a1a2e 100%);
-      position: relative;
-      overflow: hidden;
-    }
-    .login::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at top left, rgba(110,231,183,.04) 0%, transparent 60%);
-      pointer-events: none;
-    }
-    .login .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      width: min(1200px, 100%);
-      align-items: center;
-      z-index: 2;
-      position: relative;
-    }
+    .login { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 20% 50%, rgba(110,231,183,.08) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(99,179,255,.06) 0%, transparent 50%), linear-gradient(135deg, #040d17 0%, #07131d 50%, #0a1a2e 100%); position: relative; overflow: hidden; }
+    .login::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at top left, rgba(110,231,183,.04) 0%, transparent 60%); pointer-events: none; }
+    .login .container { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: min(1200px, 100%); align-items: center; z-index: 2; position: relative; }
     .login .hero { display: flex; flex-direction: column; gap: 24px; }
-    .login .hero h1 {
-      font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin: 0;
-      background: linear-gradient(135deg, #6ee7b7, #34d399, #63b3ff);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    .login .hero h1 { font-size: 3.5rem; font-weight: 900; line-height: 1.1; margin: 0; background: linear-gradient(135deg, #6ee7b7, #34d399, #63b3ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .login .hero p { font-size: 1.1rem; color: var(--muted); margin: 0; line-height: 1.6; }
     .login .features { display: grid; gap: 16px; margin-top: 12px; }
-    .feature {
-      display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: .95rem;
-    }
-    .feature::before {
-      content: "✓";
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 28px; height: 28px; border-radius: 50%; background: rgba(110,231,183,.1); color: var(--primary); font-weight: bold; flex-shrink: 0;
-    }
-    .login .box {
-      width: 100%; background: rgba(10,20,29,.88); border: 1px solid rgba(110,231,183,.16); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3), inset 0 1px 0 rgba(110,231,183,.1); padding: 40px; backdrop-filter: blur(10px);
-    }
-    .brand {
-      font-size: 1.8rem; font-weight: 900; letter-spacing: .08em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
-    }
-    .brand b {
-      color: var(--primary); display: inline-block; animation: pulse 2s ease-in-out infinite;
-    }
+    .feature { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: .95rem; }
+    .feature::before { content: "✓"; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(110,231,183,.1); color: var(--primary); font-weight: bold; flex-shrink: 0; }
+    .login .box { width: 100%; background: rgba(10,20,29,.88); border: 1px solid rgba(110,231,183,.16); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.3), inset 0 1px 0 rgba(110,231,183,.1); padding: 40px; backdrop-filter: blur(10px); }
+    .brand { font-size: 1.8rem; font-weight: 900; letter-spacing: .08em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .brand b { color: var(--primary); display: inline-block; animation: pulse 2s ease-in-out infinite; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .7; } }
-    .login h2 {
-      margin: 0 0 8px; font-size: 1.8rem; background: linear-gradient(135deg, var(--text), var(--muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
+    .login h2 { margin: 0 0 8px; font-size: 1.8rem; background: linear-gradient(135deg, var(--text), var(--muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .login p { margin: 0 0 24px; color: var(--muted); font-size: .95rem; }
     .tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--line); padding-bottom: 16px; }
-    .tab-btn {
-      background: transparent; color: var(--muted); border: none; padding: 8px 12px; font-weight: 700; font-size: .9rem; cursor: pointer; position: relative; transition: color .3s ease;
-    }
+    .tab-btn { background: transparent; color: var(--muted); border: none; padding: 8px 12px; font-weight: 700; font-size: .9rem; cursor: pointer; position: relative; transition: color .3s ease; }
     .tab-btn.active { color: var(--primary); }
-    .tab-btn.active::after {
-      content: ""; position: absolute; bottom: -16px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--primary), var(--primary-2)); border-radius: 2px;
-    }
+    .tab-btn.active::after { content: ""; position: absolute; bottom: -16px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--primary), var(--primary-2)); border-radius: 2px; }
     .field { display: grid; gap: 12px; margin-top: 16px; }
-    .field label {
-      color: var(--muted); font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block;
-    }
-    .field input {
-      width: 100%; background: rgba(9,18,25,.6); border: 1px solid rgba(110,231,183,.12); border-radius: 14px; padding: 14px 16px; color: var(--text); outline: none; font-size: 1rem; transition: all .3s ease;
-    }
+    .field label { color: var(--muted); font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; display: block; }
+    .field input { width: 100%; background: rgba(9,18,25,.6); border: 1px solid rgba(110,231,183,.12); border-radius: 14px; padding: 14px 16px; color: var(--text); outline: none; font-size: 1rem; transition: all .3s ease; }
     .field input::placeholder { color: rgba(158,184,201,.5); }
-    .field input:focus {
-      border-color: rgba(110,231,183,.36); box-shadow: 0 0 0 4px rgba(110,231,183,.1); background: rgba(9,18,25,.8);
-    }
+    .field input:focus { border-color: rgba(110,231,183,.36); box-shadow: 0 0 0 4px rgba(110,231,183,.1); background: rgba(9,18,25,.8); }
     .form-group { display: none; }
     .form-group.active { display: grid; gap: 16px; }
-    .btn, .secondary {
-      border: 0; border-radius: 14px; padding: 13px 18px; font-weight: 700; font-size: .95rem; transition: all .3s ease; text-transform: uppercase; letter-spacing: .05em;
-    }
-    .btn {
-      background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #062a1d; width: 100%; margin-top: 20px; box-shadow: 0 8px 16px rgba(110,231,183,.2);
-    }
+    .btn, .secondary { border: 0; border-radius: 14px; padding: 13px 18px; font-weight: 700; font-size: .95rem; transition: all .3s ease; text-transform: uppercase; letter-spacing: .05em; }
+    .btn { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #062a1d; width: 100%; margin-top: 20px; box-shadow: 0 8px 16px rgba(110,231,183,.2); }
     .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(110,231,183,.3); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-    .secondary {
-      background: rgba(110,231,183,.08); color: var(--text); border: 1px solid rgba(110,231,183,.2);
-    }
+    .secondary { background: rgba(110,231,183,.08); color: var(--text); border: 1px solid rgba(110,231,183,.2); }
     .secondary:hover { background: rgba(110,231,183,.12); border-color: rgba(110,231,183,.36); }
-    .msg {
-      min-height: 20px; margin-top: 16px; padding: 12px 14px; font-size: .9rem; line-height: 1.4; color: #ffe4a8; background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); border-radius: 12px; display: none;
-    }
+    .msg { min-height: 20px; margin-top: 16px; padding: 12px 14px; font-size: .9rem; line-height: 1.4; color: #ffe4a8; background: rgba(251,191,36,.08); border: 1px solid rgba(251,191,36,.2); border-radius: 12px; display: none; }
     .msg.show { display: block; }
     .msg.error { color: #fca5a5; background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.2); }
     .msg.success { color: #a7f3d0; background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.2); }
     .app { display: flex; min-height: 100vh; }
-    .side {
-      width: 260px; background: rgba(9,18,25,.86); border-right: 1px solid var(--line); padding: 18px 14px; display: flex; flex-direction: column; gap: 18px;
-    }
+    .side { width: 260px; background: rgba(9,18,25,.86); border-right: 1px solid var(--line); padding: 18px 14px; display: flex; flex-direction: column; gap: 18px; }
     .side .brand { padding: 6px 10px 0; }
     .nav { display: flex; flex-direction: column; gap: 8px; }
-    .nav button {
-      background: transparent; color: var(--muted); border: 1px solid transparent; border-radius: 12px; text-align: left; padding: 11px 12px; font-weight: 700;
-    }
-    .nav button.on {
-      background: rgba(110,231,183,.10); color: var(--text); border-color: rgba(110,231,183,.26);
-    }
-    .mini-card {
-      margin-top: auto; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(20,35,49,.88), rgba(12,22,31,.82));
-    }
-    .mini-card h4 {
-      margin: 0 0 8px; font-size: .8rem; letter-spacing: .06em; color: var(--muted); text-transform: uppercase;
-    }
+    .nav button { background: transparent; color: var(--muted); border: 1px solid transparent; border-radius: 12px; text-align: left; padding: 11px 12px; font-weight: 700; }
+    .nav button.on { background: rgba(110,231,183,.10); color: var(--text); border-color: rgba(110,231,183,.26); }
+    .mini-card { margin-top: auto; padding: 16px; border-radius: 16px; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(20,35,49,.88), rgba(12,22,31,.82)); }
+    .mini-card h4 { margin: 0 0 8px; font-size: .8rem; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
     .mini-card b { font-size: 1.45rem; display: block; margin: 6px 0; }
     .main { flex: 1; padding: 22px 22px 30px; }
-    .top {
-      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px;
-    }
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
     .top h1 { margin: 0; font-size: clamp(1.8rem, 2.2vw, 2.5rem); }
     .top .head-tools { display: flex; align-items: center; gap: 12px; }
-    .badge {
-      display: inline-flex; align-items:center; gap:8px; border-radius: 999px; padding: 7px 12px; background: rgba(110,231,183,.10); border: 1px solid rgba(110,231,183,.24); color: var(--text); font-size: .9rem;
-    }
-    .card {
-      background: linear-gradient(180deg, rgba(15, 27, 38, 0.88), rgba(12, 22, 31, 0.88)); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px;
-    }
-    .grid-stat {
-      display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px;
-    }
+    .badge { display: inline-flex; align-items:center; gap:8px; border-radius: 999px; padding: 7px 12px; background: rgba(110,231,183,.10); border: 1px solid rgba(110,231,183,.24); color: var(--text); font-size: .9rem; }
+    .card { background: linear-gradient(180deg, rgba(15, 27, 38, 0.88), rgba(12, 22, 31, 0.88)); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
+    .grid-stat { display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px; }
     .stat { position: relative; overflow: hidden; }
-    .stat::before {
-      content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--primary), var(--accent));
-    }
-    .stat .label {
-      display: block; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px;
-    }
+    .stat::before { content: ""; position: absolute; inset: 0 auto auto 0; width: 100%; height: 4px; background: linear-gradient(90deg, var(--primary), var(--accent)); }
+    .stat .label { display: block; color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
     .stat b { display: block; font-size: clamp(1.5rem, 2vw, 2.2rem); margin-bottom: 6px; }
-    .delta {
-      display: inline-block; font-size: .82rem; padding: 5px 8px; border-radius: 999px; background: rgba(110,231,183,.12); color: var(--primary);
-    }
+    .delta { display: inline-block; font-size: .82rem; padding: 5px 8px; border-radius: 999px; background: rgba(110,231,183,.12); color: var(--primary); }
     .delta.negative { background: rgba(248,113,113,.08); color: #fca5a5; }
     .grid-two { display: grid; grid-template-columns: 1.5fr 1fr; gap: 18px; margin-bottom: 18px; }
     .panel-title { margin: 0 0 14px; font-size: 1.05rem; }
-    .bars {
-      display: flex; align-items: end; gap: 12px; height: 180px; padding-top: 10px;
-    }
-    .bar-col {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: .78rem;
-    }
-    .bar {
-      width: 100%; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, var(--accent), var(--primary)); min-height: 16px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-    }
+    .bars { display: flex; align-items: end; gap: 12px; height: 180px; padding-top: 10px; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--muted); font-size: .78rem; }
+    .bar { width: 100%; border-radius: 12px 12px 0 0; background: linear-gradient(180deg, var(--accent), var(--primary)); min-height: 16px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
     .list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
     .list li { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
     .list li:last-child { border-bottom: 0; }
-    .pill {
-      display: inline-flex; border-radius: 999px; padding: 7px 10px; font-size: .76rem; font-weight: 700;
-    }
+    .pill { display: inline-flex; border-radius: 999px; padding: 7px 10px; font-size: .76rem; font-weight: 700; }
     .pill.ok { background: rgba(34,197,94,.12); color: var(--success); }
     .pill.warn { background: rgba(251,191,36,.12); color: var(--warning); }
     .pill.alert { background: rgba(248,113,113,.12); color: var(--danger); }
@@ -196,9 +106,7 @@
     .table-wrap th { color: var(--text); font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
     .table-wrap tbody tr:hover { background: rgba(255,255,255,.025); }
     .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 14px; }
-    .toolbar input, .toolbar select {
-      border: 1px solid var(--line); border-radius: 12px; background: rgba(9,18,25,.7); color: var(--text); padding: 9px 12px; min-width: 180px;
-    }
+    .toolbar input, .toolbar select { border: 1px solid var(--line); border-radius: 12px; background: rgba(9,18,25,.7); color: var(--text); padding: 9px 12px; min-width: 180px; }
     .crmgrid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px; }
     .crmstat { background: rgba(12,22,31,.78); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
     .crmstat .k { display: block; font-size: 1.8rem; margin-top: 10px; }
@@ -206,30 +114,9 @@
     .userbubble { margin-left: auto; background: rgba(110,231,183,.12); }
     .aibubble { background: rgba(99,179,255,.08); }
     .small { font-size: .8rem; color: var(--muted); }
-    .modal { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(1,4,8,.58); z-index: 15; }
-    .modal .box { width: min(560px, calc(100% - 30px)); background: rgba(10,18,26,.98); border: 1px solid var(--line); border-radius: 18px; padding: 18px; box-shadow: var(--shadow); }
-    .topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .modal label { display: grid; gap: 8px; margin-top: 12px; color: var(--muted); }
-    .modal input, .modal select, .modal textarea {
-      width: 100%; background: rgba(9,18,25,.8); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--text);
-    }
-    @media (max-width: 1024px) {
-      .login .container { grid-template-columns: 1fr; }
-      .login .hero { display: none; }
-    }
-    @media (max-width: 980px) {
-      .app { display: block; }
-      .side { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
-      .nav { flex-direction: row; flex-wrap: wrap; }
-      .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 700px) {
-      .main { padding: 16px; }
-      .top { flex-direction: column; align-items: flex-start; }
-      .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr; }
-      .login .box { padding: 24px; }
-      .login h2 { font-size: 1.4rem; }
-    }
+    @media (max-width: 1024px) { .login .container { grid-template-columns: 1fr; } .login .hero { display: none; } }
+    @media (max-width: 980px) { .app { display: block; } .side { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); } .nav { flex-direction: row; flex-wrap: wrap; } .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 700px) { .main { padding: 16px; } .top { flex-direction: column; align-items: flex-start; } .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr; } .login .box { padding: 24px; } .login h2 { font-size: 1.4rem; } }
   </style>
 </head>
 <body>
@@ -296,17 +183,14 @@
       <div class="brand">IMPULSE <b>AI</b></div>
       <h2>Configurá tu empresa</h2>
       <p>Antes de entrar al panel, creá el negocio que vas a administrar.</p>
-
       <div class="field">
         <label for="business-name">Nombre de la empresa</label>
         <input id="business-name" type="text" placeholder="Ej: Mi Empresa">
       </div>
-
       <div class="field">
         <label for="business-type">Rubro</label>
         <input id="business-type" type="text" placeholder="Ej: Comercio, supermercado, motos">
       </div>
-
       <button class="btn" onclick="createBusiness()">Crear empresa y continuar</button>
       <div id="msg-setup" class="msg"></div>
       <button class="secondary" style="margin-top:8px;width:100%" onclick="logout()">Cerrar sesión</button>
@@ -346,26 +230,10 @@
 
       <section id="dashboard">
         <div class="grid-stat">
-          <div class="card stat">
-            <span class="label">Ingresos</span>
-            <b id="revenueValue">$0</b>
-            <span id="revenueDelta" class="delta">+0%</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Gastos</span>
-            <b id="expenseValue">$0</b>
-            <span id="expenseDelta" class="delta negative">-0%</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Utilidad</span>
-            <b id="profitValue">$0</b>
-            <span id="profitDelta" class="delta">+0%</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Cobranza</span>
-            <b id="collectionValue">$0</b>
-            <span id="collectionDelta" class="delta">0%</span>
-          </div>
+          <div class="card stat"><span class="label">Ingresos</span><b id="revenueValue">$0</b><span id="revenueDelta" class="delta">+0%</span></div>
+          <div class="card stat"><span class="label">Gastos</span><b id="expenseValue">$0</b><span id="expenseDelta" class="delta negative">-0%</span></div>
+          <div class="card stat"><span class="label">Utilidad</span><b id="profitValue">$0</b><span id="profitDelta" class="delta">+0%</span></div>
+          <div class="card stat"><span class="label">Cobranza</span><b id="collectionValue">$0</b><span id="collectionDelta" class="delta">0%</span></div>
         </div>
 
         <div class="grid-two">
@@ -380,7 +248,6 @@
               <div class="bar-col"><div class="bar" style="height: 75%"></div><span>Jun</span></div>
             </div>
           </div>
-
           <div class="card">
             <h3 class="panel-title">Presupuesto</h3>
             <ul class="list">
@@ -393,15 +260,8 @@
         </div>
 
         <div class="grid-two">
-          <div class="card">
-            <h3 class="panel-title">Top clientes</h3>
-            <div id="topClients" class="table-wrap"></div>
-          </div>
-
-          <div class="card">
-            <h3 class="panel-title">Pedidos recientes</h3>
-            <div id="recentOrders" class="table-wrap"></div>
-          </div>
+          <div class="card"><h3 class="panel-title">Top clientes</h3><div id="topClients" class="table-wrap"></div></div>
+          <div class="card"><h3 class="panel-title">Pedidos recientes</h3><div id="recentOrders" class="table-wrap"></div></div>
         </div>
       </section>
 
@@ -434,7 +294,6 @@
               <li><span>Otros</span><b id="otherExpense">$0</b></li>
             </ul>
           </div>
-
           <div class="card">
             <h3 class="panel-title">Ratio financiero</h3>
             <ul class="list">
@@ -453,11 +312,8 @@
           <div class="crmstat"><span class="muted">VIP</span><span id="crmVip" class="k">0</span></div>
           <div class="crmstat"><span class="muted">Ticket promedio</span><span id="crmAvg" class="k">$0</span></div>
         </div>
-
         <div class="card">
-          <div class="toolbar">
-            <input id="cs" placeholder="Buscar cliente..." oninput="renderCustomers()">
-          </div>
+          <div class="toolbar"><input id="cs" placeholder="Buscar cliente..." oninput="renderCustomers()"></div>
           <div id="ct" class="table-wrap"></div>
         </div>
       </section>
@@ -507,38 +363,14 @@
 
       <section id="risk" class="hidden">
         <div class="grid-stat">
-          <div class="card stat">
-            <span class="label">Operaciones</span>
-            <b id="riskOperations">0</b>
-            <span class="delta">Total</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Volumen</span>
-            <b id="riskVolume">$0</b>
-            <span class="delta">Monto</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Score</span>
-            <b id="riskScore">0/100</b>
-            <span class="delta">Riesgo</span>
-          </div>
-          <div class="card stat">
-            <span class="label">Alertas</span>
-            <b id="riskAlerts">0</b>
-            <span class="delta">Abiertas</span>
-          </div>
+          <div class="card stat"><span class="label">Operaciones</span><b id="riskOperations">0</b><span class="delta">Total</span></div>
+          <div class="card stat"><span class="label">Volumen</span><b id="riskVolume">$0</b><span class="delta">Monto</span></div>
+          <div class="card stat"><span class="label">Score</span><b id="riskScore">0/100</b><span class="delta">Riesgo</span></div>
+          <div class="card stat"><span class="label">Alertas</span><b id="riskAlerts">0</b><span class="delta">Abiertas</span></div>
         </div>
-
         <div class="grid-two">
-          <div class="card">
-            <h3 class="panel-title">Alertas activas</h3>
-            <div id="riskAlertsList" class="list"></div>
-          </div>
-
-          <div class="card">
-            <h3 class="panel-title">Resumen del riesgo</h3>
-            <div id="riskSummary" class="list"></div>
-          </div>
+          <div class="card"><h3 class="panel-title">Alertas activas</h3><div id="riskAlertsList" class="list"></div></div>
+          <div class="card"><h3 class="panel-title">Resumen del riesgo</h3><div id="riskSummary" class="list"></div></div>
         </div>
       </section>
     </main>
@@ -547,16 +379,14 @@
   <script>
     const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
     const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
-    const db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    const db = window.supabase.createClient(URL, KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 
-    let user,biz,customers=[],products=[],orders=[];
-    let financialOperations=[];
-    let financialAlerts=[];
-    let financialAnalyses=[];
+    let user, biz, customers = [], products = [], orders = [];
+    let financialOperations = [], financialAlerts = [], financialAnalyses = [];
 
-    const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado'};
-    const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-    const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).format(Number(x||0));
+    const labels = { pending: 'Pendiente', confirmed: 'Confirmado', paid: 'Pagado', preparing: 'Preparando', shipped: 'Enviado', completed: 'Completado' };
+    const esc = x => String(x ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    const money = x => new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(x || 0));
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     function switchTab(tab) {
@@ -568,7 +398,7 @@
       if (activeBtn) activeBtn.classList.add('active');
     }
 
-    function setMsg(text, type='error', context='login') {
+    function setMsg(text, type = 'error', context = 'login') {
       const el = document.getElementById('msg-' + context);
       if (!el) return;
       el.textContent = text || '';
@@ -586,7 +416,6 @@
     function saveAgentConfig() {
       const key = document.getElementById('agentApiKey').value.trim();
       const model = document.getElementById('agentModel').value || 'gpt-4o-mini';
-
       if (key) {
         localStorage.setItem('impulseAiApiKey', key);
         localStorage.setItem('impulseAiModel', model);
@@ -607,38 +436,48 @@
       if (modelInput) modelInput.value = model;
     }
 
-    async function init(){
-      const loginView=document.getElementById('login'), appView=document.getElementById('app');
+    async function init() {
+      const loginView = document.getElementById('login');
+      const appView = document.getElementById('app');
       loadAgentConfig();
-      try{
-        const {data:{session},error:sessionError}=await db.auth.getSession();
-        if(sessionError) throw sessionError;
-        if(!session){ loginView.classList.remove('hidden'); appView.classList.add('hidden'); return false; }
 
-        const {data:{user:currentUser},error:userError}=await db.auth.getUser();
-        if(userError) throw userError;
-        if(!currentUser){ loginView.classList.remove('hidden'); appView.classList.add('hidden'); return false; }
+      try {
+        const { data: { session }, error: sessionError } = await db.auth.getSession();
+        if (sessionError) throw sessionError;
+        if (!session) {
+          loginView.classList.remove('hidden');
+          appView.classList.add('hidden');
+          return false;
+        }
 
-        user=currentUser;
-        const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
-        if(q.error) throw q.error;
+        const { data: { user: currentUser }, error: userError } = await db.auth.getUser();
+        if (userError) throw userError;
+        if (!currentUser) {
+          loginView.classList.remove('hidden');
+          appView.classList.add('hidden');
+          return false;
+        }
 
-        if(!q.data){
+        user = currentUser;
+        const q = await db.from('business_members').select('business_id,businesses(*)').eq('user_id', user.id).limit(1).maybeSingle();
+        if (q.error) throw q.error;
+
+        if (!q.data) {
           loginView.classList.add('hidden');
           appView.classList.add('hidden');
           document.getElementById('setup').classList.remove('hidden');
           return false;
         }
 
-        biz=q.data.businesses;
+        biz = q.data.businesses;
         document.getElementById('biz').textContent = biz.name;
         loginView.classList.add('hidden');
         appView.classList.remove('hidden');
         await load();
         show('dashboard');
         return true;
-      }catch(e){
-        console.error('init auth:',e);
+      } catch (e) {
+        console.error('init auth:', e);
         loginView.classList.remove('hidden');
         appView.classList.add('hidden');
         setMsg('Error de inicio de sesión: ' + (e.message || 'No se pudo validar la sesión.'), 'error', 'login');
@@ -646,14 +485,14 @@
       }
     }
 
-    async function load(){
-      const [a,b,c,d,e,f]=await Promise.all([
-        db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
-        db.from('products').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
-        db.from('orders').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
-        db.from('financial_operations').select('*').eq('business_id',biz.id).order('occurred_at',{ascending:false}).limit(100),
-        db.from('financial_alerts').select('*').eq('business_id',biz.id).in('status',['open','reviewing']).order('created_at',{ascending:false}).limit(50),
-        db.from('financial_analyses').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}).limit(10)
+    async function load() {
+      const [a, b, c, d, e, f] = await Promise.all([
+        db.from('customers').select('*').eq('business_id', biz.id).order('created_at', { ascending: false }),
+        db.from('products').select('*').eq('business_id', biz.id).order('created_at', { ascending: false }),
+        db.from('orders').select('*').eq('business_id', biz.id).order('created_at', { ascending: false }),
+        db.from('financial_operations').select('*').eq('business_id', biz.id).order('occurred_at', { ascending: false }).limit(100),
+        db.from('financial_alerts').select('*').eq('business_id', biz.id).in('status', ['open', 'reviewing']).order('created_at', { ascending: false }).limit(50),
+        db.from('financial_analyses').select('*').eq('business_id', biz.id).order('created_at', { ascending: false }).limit(10)
       ]);
 
       customers = a.data || [];
@@ -667,19 +506,51 @@
       renderCustomers();
       renderOrders();
       renderRisk();
-      renderPrompt();
+      renderContext();
+      addAgentMessage('ai', 'Hola, soy tu asistente financiero. Puedo ayudarte con ventas, margen, clientes, cobranzas y riesgo.');
     }
 
-    function buildBusinessContext(){
+    function getMonthlySummary() {
+      const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const now = new Date();
+      const bucket = {};
+
+      for (let i = 0; i < 6; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+        const key = `${d.getFullYear()}-${d.getMonth()}`;
+        bucket[key] = { label: months[d.getMonth()], revenue: 0, orders: 0 };
+      }
+
+      orders.forEach(o => {
+        if (!o.created_at) return;
+        const date = new Date(o.created_at);
+        const key = `${date.getFullYear()}-${date.getMonth()}`;
+        if (bucket[key]) {
+          bucket[key].revenue += Number(o.total || 0);
+          bucket[key].orders += 1;
+        }
+      });
+
+      return Object.values(bucket).map(item => ({ label: item.label, revenue: item.revenue, orders: item.orders }));
+    }
+
+    function buildBusinessContext() {
       const paid = orders.filter(x => x.payment_status === 'paid');
+      const unpaid = orders.filter(x => x.payment_status !== 'paid');
       const totalRevenue = paid.reduce((sum, x) => sum + Number(x.total || 0), 0);
-      const pendingRevenue = orders.filter(x => x.payment_status !== 'paid').reduce((sum, x) => sum + Number(x.total || 0), 0);
+      const pendingRevenue = unpaid.reduce((sum, x) => sum + Number(x.total || 0), 0);
       const expenseTotal = Math.max(18000, totalRevenue * 0.38);
-      const favorable = totalRevenue - expenseTotal;
+      const profit = totalRevenue - expenseTotal;
+      const collectionRate = orders.length ? ((paid.length / orders.length) * 100) : 0;
+      const avgTicket = orders.length ? (paid.reduce((sum, x) => sum + Number(x.total || 0), 0) / paid.length || 0) : 0;
+      const grossMargin = totalRevenue ? ((totalRevenue * 0.42) / totalRevenue) * 100 : 0;
       const topCustomer = [...customers].map(c => {
         const spent = orders.filter(o => o.customer_id === c.id && o.payment_status === 'paid').reduce((sum, o) => sum + Number(o.total || 0), 0);
         return { name: c.name || 'Cliente', spent };
-      }).sort((a,b) => (b.spent || 0) - (a.spent || 0))[0];
+      }).sort((a, b) => (b.spent || 0) - (a.spent || 0))[0];
+
+      const scores = financialOperations.map(o => Number(o.risk_score)).filter(n => !isNaN(n));
+      const risk = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
 
       return {
         business: biz?.name || 'Negocio',
@@ -689,15 +560,142 @@
         revenue: totalRevenue,
         pendingRevenue,
         expenses: expenseTotal,
-        profit: favorable,
-        grossMargin: totalRevenue ? ((totalRevenue * 0.42) / totalRevenue) * 100 : 0,
-        topCustomer: topCustomer ? topCustomer.name + ' (' + money(topCustomer.spent) + ')' : 'Sin clientes',
+        profit,
+        grossMargin,
+        collectionRate,
+        avgTicket,
+        topCustomer: topCustomer ? `${topCustomer.name} (${money(topCustomer.spent)})` : 'Sin clientes',
         alerts: financialAlerts.length,
-        risk: financialOperations.length ? Math.round(financialOperations.map(o => Number(o.risk_score || 0)).filter(n => !isNaN(n)).reduce((a,b) => a + b, 0) / financialOperations.length) : 0,
+        risk,
+        monthly: getMonthlySummary(),
+        storage: {
+          openAlerts: financialAlerts.filter(a => a.status === 'open' || a.status === 'reviewing').length,
+          activeOperations: financialOperations.length
+        }
       };
     }
 
-    function renderAll(){
+    function buildRecommendations(context) {
+      const recs = [];
+      if (context.collectionRate < 75) recs.push('Ajustá la política de cobranza para recuperar más ventas en menos de 30 días.');
+      if (context.risk > 60) recs.push('Revisá alertas y operaciones con riesgo alto antes de ampliar gastos o stock.');
+      if (context.customers < 10) recs.push('Buscá nuevos clientes o mejorar la retención para aumentar volumen sin subir gastos fijos.');
+      if (context.grossMargin < 35) recs.push('Reducí costos de operación y logística para mejorar el margen bruto.');
+      if (recs.length === 0) recs.push('Mantené la disciplina de costos y reforzá la retención de clientes VIP para sostener rentabilidad.');
+      return recs.slice(0, 3);
+    }
+
+    function localAgentResponse(q, context) {
+      const x = q.toLowerCase();
+      const totalRevenue = context.revenue;
+      const profit = context.profit;
+      const grossMargin = context.grossMargin;
+      const collectionRate = context.collectionRate;
+      const risk = context.risk;
+      const recommendations = buildRecommendations(context);
+
+      if (x.includes('venta') || x.includes('ingreso') || x.includes('mes') || x.includes('ingresos')) {
+        return `En este negocio, los ingresos del período ascienden a ${money(totalRevenue)}. Hay ${context.totalOrders} pedidos registrados y ${context.paidOrders} ya están cobrados. El flujo se ve ${collectionRate >= 75 ? 'sólido' : 'con atención'} y la recomendación es ${recommendations[0].toLowerCase()}`;
+      }
+
+      if (x.includes('margen') || x.includes('utilidad') || x.includes('rentabilidad')) {
+        return `El margen bruto estimado es de ${grossMargin.toFixed(1)}%. La utilidad neta proyectada es de ${money(profit)}. Para sostenerlo, conviene ${recommendations[1] ? recommendations[1].toLowerCase() : recommendations[0].toLowerCase()}`;
+      }
+
+      if (x.includes('cliente') || x.includes('clientes')) {
+        return `Actualmente tenés ${context.customers} clientes registrados y el principal es ${context.topCustomer}. El ticket promedio es ${money(context.avgTicket)}. La estrategia ideal es reforzar tus clientes VIP y aumentar la retención.`;
+      }
+
+      if (x.includes('cobranza') || x.includes('cobro') || x.includes('moros')) {
+        return `La cobranza efectiva está en ${collectionRate.toFixed(1)}%. Eso indica ${collectionRate >= 80 ? 'un nivel saludable' : 'necesidad de reforzar seguimiento'} de pagos. Recomendación: ${recommendations[0].toLowerCase()}`;
+      }
+
+      if (x.includes('riesgo') || x.includes('alerta')) {
+        return `El score de riesgo actual es ${risk}/100 con ${context.alerts} alertas abiertas. La situación es ${risk > 60 ? 'requiere atención inmediata' : risk > 40 ? 'moderada' : 'estable'}. ${recommendations[0]}`;
+      }
+
+      if (x.includes('recomend') || x.includes('qué harías') || x.includes('acción')) {
+        return `Mi recomendación principal es: ${recommendations[0]}. También sugeriría ${recommendations[1] || recommendations[0]}. Y en tercer lugar, ${recommendations[2] || recommendations[1] || recommendations[0]}.`;
+      }
+
+      return `El negocio tiene ${money(context.revenue)} en ingresos, ${money(context.profit)} de utilidad y una cobranza del ${collectionRate.toFixed(1)}%. El riesgo actual es ${risk}/100. Mi recomendación principal es ${recommendations[0].toLowerCase()}.`;
+    }
+
+    function renderContext() {
+      const context = buildBusinessContext();
+      document.getElementById('agentBizName').textContent = context.business;
+      document.getElementById('agentRevenue').textContent = money(context.revenue);
+      document.getElementById('agentCustomerCount').textContent = context.customers;
+      document.getElementById('agentOrderCount').textContent = context.totalOrders;
+    }
+
+    async function askOpenAI(question, context) {
+      const apiKey = localStorage.getItem('impulseAiApiKey');
+      const model = localStorage.getItem('impulseAiModel') || 'gpt-4o-mini';
+      if (!apiKey) throw new Error('Sin API key');
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+        body: JSON.stringify({
+          model,
+          temperature: 0.4,
+          messages: [
+            { role: 'system', content: 'Sos un analista financiero para PYMES. Respondés en español, en un tono profesional, claro y breve. Usás los datos del negocio entregados. No inventes información. Si faltan datos, decilo. Da recomendaciones accionables. Incluí métricas con formato monetario en pesos argentinos.' },
+            { role: 'user', content: 'Contexto del negocio:\n' + JSON.stringify(context, null, 2) + '\n\nPregunta: ' + question }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        const msg = data?.error?.message || 'Error al consultar IA';
+        throw new Error(msg);
+      }
+
+      return data?.choices?.[0]?.message?.content?.trim() || 'No pude generar una respuesta.';
+    }
+
+    async function sendAgent() {
+      const q = document.getElementById('agentInput').value.trim();
+      if (!q) return;
+
+      addAgentMessage('user', q);
+      document.getElementById('agentInput').value = '';
+
+      const context = buildBusinessContext();
+      const apiKey = localStorage.getItem('impulseAiApiKey');
+
+      setTimeout(async () => {
+        try {
+          if (apiKey) {
+            const answer = await askOpenAI(q, context);
+            addAgentMessage('ai', answer);
+            return;
+          }
+          addAgentMessage('ai', localAgentResponse(q, context));
+        } catch (e) {
+          console.error('agent error:', e);
+          addAgentMessage('ai', 'La IA no respondió correctamente. Se usó la respuesta local: ' + localAgentResponse(q, context));
+        }
+      }, 400);
+    }
+
+    function addAgentMessage(who, text) {
+      const el = document.getElementById('chat');
+      const d = document.createElement('div');
+      d.className = 'bubble ' + (who === 'user' ? 'userbubble' : 'aibubble');
+      d.innerHTML = '<div class="small">' + (who === 'user' ? 'Tú' : 'IA') + '</div><div>' + esc(text) + '</div>';
+      el.appendChild(d);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    function quickAgent(text) {
+      document.getElementById('agentInput').value = text;
+      sendAgent();
+    }
+
+    function renderAll() {
       const paid = orders.filter(x => x.payment_status === 'paid');
       const totalRevenue = paid.reduce((sum, x) => sum + Number(x.total || 0), 0);
       const pendingRevenue = orders.filter(x => x.payment_status !== 'paid').reduce((sum, x) => sum + Number(x.total || 0), 0);
@@ -710,9 +708,9 @@
       document.getElementById('expenseValue').textContent = money(expenseTotal);
       document.getElementById('profitValue').textContent = money(nincome);
       document.getElementById('collectionValue').textContent = money(paid.reduce((sum, x) => sum + Number(x.total || 0), 0));
-      document.getElementById('revenueDelta').textContent = '+' + (orders.length ? Math.min(96, Math.round((paid.length / Math.max(orders.length,1)) * 100)) : 0) + '%';
-      document.getElementById('expenseDelta').textContent = '-' + (Math.min(45, Math.round((expenseTotal / Math.max(totalRevenue || 1,1)) * 100))) + '%';
-      document.getElementById('profitDelta').textContent = '+' + (Math.min(68, Math.round((grossProfit / Math.max(totalRevenue || 1,1)) * 100))) + '%';
+      document.getElementById('revenueDelta').textContent = '+' + (orders.length ? Math.min(96, Math.round((paid.length / Math.max(orders.length, 1)) * 100)) : 0) + '%';
+      document.getElementById('expenseDelta').textContent = '-' + (Math.min(45, Math.round((expenseTotal / Math.max(totalRevenue || 1, 1)) * 100))) + '%';
+      document.getElementById('profitDelta').textContent = '+' + (Math.min(68, Math.round((grossProfit / Math.max(totalRevenue || 1, 1)) * 100))) + '%';
       document.getElementById('collectionDelta').textContent = Math.round(collectionRate) + '%';
       document.getElementById('cashFlowValue').textContent = money(totalRevenue - pendingRevenue);
       document.getElementById('cashFlowState').textContent = totalRevenue >= pendingRevenue ? 'Estable' : 'Atención';
@@ -749,15 +747,11 @@
       document.getElementById('recentOrders').innerHTML = recent.length ? `<table><tbody>${recent.map(o => '<tr><td>' + esc(labels[o.status] || '—') + '</td><td>' + money(o.total || 0) + '</td></tr>').join('')}</tbody></table>` : '<p class="muted">No hay pedidos recientes.</p>';
     }
 
-    function renderRisk(){
+    function renderRisk() {
       const total = financialOperations.length;
       const volume = financialOperations.reduce((s, o) => s + Number(o.amount || 0), 0);
       const alerts = financialAlerts.length;
-
-      const scores = financialOperations
-        .map(o => Number(o.risk_score))
-        .filter(n => !isNaN(n));
-
+      const scores = financialOperations.map(o => Number(o.risk_score)).filter(n => !isNaN(n));
       const riskScore = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
 
       document.getElementById('riskOperations').textContent = total;
@@ -780,10 +774,10 @@
       document.getElementById('riskSummary').innerHTML = summary;
     }
 
-    function show(id){
-      const sections = ['dashboard','sales','expenses','customers','agent','risk'];
+    function show(id) {
+      const sections = ['dashboard', 'sales', 'expenses', 'customers', 'agent', 'risk'];
       sections.forEach(x => document.getElementById(x).classList.toggle('hidden', x !== id));
-      document.getElementById('title').textContent = {dashboard:'Panel',sales:'Ventas',expenses:'Gastos',customers:'Clientes',agent:'IA',risk:'Riesgo'}[id] || 'Panel';
+      document.getElementById('title').textContent = { dashboard: 'Panel', sales: 'Ventas', expenses: 'Gastos', customers: 'Clientes', agent: 'IA', risk: 'Riesgo' }[id] || 'Panel';
       document.getElementById('nDashboard').classList.toggle('on', id === 'dashboard');
       document.getElementById('nSales').classList.toggle('on', id === 'sales');
       document.getElementById('nExpenses').classList.toggle('on', id === 'expenses');
@@ -792,135 +786,39 @@
       document.getElementById('nRisk').classList.toggle('on', id === 'risk');
     }
 
-    function renderOrders(){
-      const t=(document.getElementById('os')?.value||'').toLowerCase();
-      const f=document.getElementById('of')?.value||'all';
-      const a=orders.filter(o => {
-        const matchesText = (String(o.id)+' '+(labels[o.status]||'')).toLowerCase().includes(t);
-        const matchesFilter = f==='all' || o.status===f || o.payment_status===f;
+    function renderOrders() {
+      const t = (document.getElementById('os')?.value || '').toLowerCase();
+      const f = document.getElementById('of')?.value || 'all';
+      const a = orders.filter(o => {
+        const matchesText = (String(o.id) + ' ' + (labels[o.status] || '')).toLowerCase().includes(t);
+        const matchesFilter = f === 'all' || o.status === f || o.payment_status === f;
         return matchesText && matchesFilter;
       });
-      const table = '<table><tr><th>ID Pedido</th><th>Estado</th><th>Total</th></tr>' + a.slice(0,8).map(o => `<tr><td>${esc(o.id)}</td><td>${esc(labels[o.status] || '—')}</td><td>${money(o.total || 0)}</td></tr>`).join('') + '</table>';
+      const table = '<table><tr><th>ID Pedido</th><th>Estado</th><th>Total</th></tr>' + a.slice(0, 8).map(o => `<tr><td>${esc(o.id)}</td><td>${esc(labels[o.status] || '—')}</td><td>${money(o.total || 0)}</td></tr>`).join('') + '</table>';
       document.getElementById('orderTable').innerHTML = a.length ? table : '<p class="muted">No hay pedidos.</p>';
     }
 
-    function renderCustomers(){
-      const t=(document.getElementById('cs')?.value||'').toLowerCase();
-      const a=customers.filter(x => (x.name+' '+(x.phone||'')+' '+(x.email||'')).toLowerCase().includes(t));
+    function renderCustomers() {
+      const t = (document.getElementById('cs')?.value || '').toLowerCase();
+      const a = customers.filter(x => (x.name + ' ' + (x.phone || '') + ' ' + (x.email || '')).toLowerCase().includes(t));
       const table = '<table><tr><th>Cliente</th><th>Teléfono</th><th>Email</th></tr>' + a.map(c => `<tr><td>${esc(c.name || 'Cliente')}</td><td>${esc(c.phone || '—')}</td><td>${esc(c.email || '—')}</td></tr>`).join('') + '</table>';
       document.getElementById('ct').innerHTML = a.length ? table : '<p class="muted">No hay clientes.</p>';
     }
 
-    function addAgentMessage(who, text){
-      const el=document.getElementById('chat');
-      const d=document.createElement('div');
-      d.className='bubble ' + (who === 'user' ? 'userbubble' : 'aibubble');
-      d.innerHTML = '<div class="small">' + (who === 'user' ? 'Tú' : 'IA') + '</div><div>' + esc(text) + '</div>';
-      el.appendChild(d);
-      el.scrollTop = el.scrollHeight;
-    }
-
-    function quickAgent(text){
-      document.getElementById('agentInput').value = text;
-      sendAgent();
-    }
-
-    function agentAnswer(q){
-      const x = q.toLowerCase();
-      const totalRevenue = orders.filter(o => o.payment_status === 'paid').reduce((a, o) => a + Number(o.total || 0), 0);
-      const grossMargin = totalRevenue ? ((totalRevenue * 0.42 / totalRevenue) * 100) : 0;
-
-      if (x.includes('venta') || x.includes('ingreso') || x.includes('mes')) return 'El negocio registró ingresos por ' + money(totalRevenue) + ' con ' + orders.length + ' pedidos totales.';
-      if (x.includes('margen') || x.includes('utilidad')) return 'El margen estimado del negocio es del ' + grossMargin.toFixed(1) + '% sobre ventas.';
-      if (x.includes('cliente')) return 'Actualmente hay ' + customers.length + ' clientes registrados.';
-      if (x.includes('cobranza') || x.includes('cobro')) return 'La cobranza se encuentra en ' + Math.round(orders.length ? ((orders.filter(o => o.payment_status === 'paid').length / orders.length) * 100) : 0) + '% del total de pedidos.';
-      return 'Puedo ayudarte con ventas, margen, clientes y cobranzas. Preguntá por cualquiera de esos indicadores.';
-    }
-
-    async function askOpenAI(question, context){
-      const apiKey = localStorage.getItem('impulseAiApiKey');
-      const model = localStorage.getItem('impulseAiModel') || 'gpt-4o-mini';
-      if (!apiKey) throw new Error('Sin API key');
-
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + apiKey
-        },
-        body: JSON.stringify({
-          model,
-          temperature: 0.4,
-          messages: [
-            {
-              role: 'system',
-              content: 'Sos un analista financiero para PyME. Responde en español. Usa los datos del negocio, no inventes métricas. Si faltan datos, aclara que no hay suficiente información. Responde con un tono profesional y breve. Indica números en pesos argentinos con formato ARS.'
-            },
-            {
-              role: 'user',
-              content: 'Contexto del negocio:\n' + JSON.stringify(context, null, 2) + '\n\nPregunta: ' + question
-            }
-          ]
-        })
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        const msg = data?.error?.message || 'Error al consultar IA';
-        throw new Error(msg);
-      }
-
-      return data?.choices?.[0]?.message?.content?.trim() || 'No pude generar una respuesta.';
-    }
-
-    function renderPrompt(){
-      const context = buildBusinessContext();
-      document.getElementById('agentBizName').textContent = context.business;
-      document.getElementById('agentRevenue').textContent = money(context.revenue);
-      document.getElementById('agentCustomerCount').textContent = context.customers;
-      document.getElementById('agentOrderCount').textContent = context.totalOrders;
-    }
-
-    async function sendAgent(){
-      const q=document.getElementById('agentInput').value.trim();
-      if (!q) return;
-
-      addAgentMessage('user', q);
-      document.getElementById('agentInput').value='';
-
-      const context = buildBusinessContext();
-      const apiKey = localStorage.getItem('impulseAiApiKey');
-
-      setTimeout(async ()=>{
-        try {
-          if (apiKey) {
-            const answer = await askOpenAI(q, context);
-            addAgentMessage('ai', answer);
-            return;
-          }
-          addAgentMessage('ai', agentAnswer(q));
-        } catch (e) {
-          console.error('agent error:', e);
-          addAgentMessage('ai', 'La IA no respondió correctamente. Se usó la respuesta local. ' + agentAnswer(q));
-        }
-      }, 400);
-    }
-
-    async function createBusiness(){
-      const name=document.getElementById('business-name').value.trim();
-      const type=document.getElementById('business-type').value.trim();
-
-      if(!name){
-        setMsg('Ingresá el nombre de tu empresa.','error','setup');
+    async function createBusiness() {
+      const name = document.getElementById('business-name').value.trim();
+      const type = document.getElementById('business-type').value.trim();
+      if (!name) {
+        setMsg('Ingresá el nombre de tu empresa.', 'error', 'setup');
         return;
       }
 
       try {
-        const {data:businessData,error:businessError}=await db.from('businesses').insert([{name,type}]).select().single();
-        if(businessError) throw businessError;
+        const { data: businessData, error: businessError } = await db.from('businesses').insert([{ name, type }]).select().single();
+        if (businessError) throw businessError;
 
-        const {error:memberError}=await db.from('business_members').insert([{business_id:businessData.id,user_id:user.id,role:'owner'}]);
-        if(memberError) throw memberError;
+        const { error: memberError } = await db.from('business_members').insert([{ business_id: businessData.id, user_id: user.id, role: 'owner' }]);
+        if (memberError) throw memberError;
 
         biz = businessData;
         document.getElementById('setup').classList.add('hidden');
@@ -934,20 +832,20 @@
       }
     }
 
-    async function login(){
-      const email=document.getElementById('email-login').value.trim();
-      const pass=document.getElementById('pass-login').value;
-      if(!validateEmail(email)){ setMsg('Ingresá un email válido.','error','login'); return; }
-      if(!pass){ setMsg('Ingresá tu contraseña.','error','login'); return; }
+    async function login() {
+      const email = document.getElementById('email-login').value.trim();
+      const pass = document.getElementById('pass-login').value;
+      if (!validateEmail(email)) { setMsg('Ingresá un email válido.', 'error', 'login'); return; }
+      if (!pass) { setMsg('Ingresá tu contraseña.', 'error', 'login'); return; }
 
       try {
-        const {data, error} = await db.auth.signInWithPassword({ email, password: pass });
-        if(error) throw error;
+        const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+        if (error) throw error;
         user = data.user;
-        const q = await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
-        if(q.error) throw q.error;
+        const q = await db.from('business_members').select('business_id,businesses(*)').eq('user_id', user.id).limit(1).maybeSingle();
+        if (q.error) throw q.error;
 
-        if(!q.data){
+        if (!q.data) {
           document.getElementById('login').classList.add('hidden');
           document.getElementById('setup').classList.remove('hidden');
           return;
@@ -965,18 +863,18 @@
       }
     }
 
-    async function signup(){
-      const email=document.getElementById('email-signup').value.trim();
-      const pass=document.getElementById('pass-signup').value;
-      const confirm=document.getElementById('pass-confirm').value;
+    async function signup() {
+      const email = document.getElementById('email-signup').value.trim();
+      const pass = document.getElementById('pass-signup').value;
+      const confirm = document.getElementById('pass-confirm').value;
 
-      if(!validateEmail(email)){ setMsg('Ingresá un email válido.','error','signup'); return; }
-      if(pass.length < 6){ setMsg('La contraseña debe tener al menos 6 caracteres.','error','signup'); return; }
-      if(pass !== confirm){ setMsg('Las contraseñas no coinciden.','error','signup'); return; }
+      if (!validateEmail(email)) { setMsg('Ingresá un email válido.', 'error', 'signup'); return; }
+      if (pass.length < 6) { setMsg('La contraseña debe tener al menos 6 caracteres.', 'error', 'signup'); return; }
+      if (pass !== confirm) { setMsg('Las contraseñas no coinciden.', 'error', 'signup'); return; }
 
       try {
-        const {data,error} = await db.auth.signUp({ email, password: pass });
-        if(error) throw error;
+        const { data, error } = await db.auth.signUp({ email, password: pass });
+        if (error) throw error;
         setMsg('Cuenta creada. Revisá tu email para confirmar la cuenta.', 'success', 'signup');
       } catch (e) {
         console.error('signup error:', e);
@@ -984,12 +882,12 @@
       }
     }
 
-    async function resetPassword(){
+    async function resetPassword() {
       const email = document.getElementById('email-login').value.trim();
-      if(!validateEmail(email)){ setMsg('Ingresá un email válido para recuperar la contraseña.','error','login'); return; }
+      if (!validateEmail(email)) { setMsg('Ingresá un email válido para recuperar la contraseña.', 'error', 'login'); return; }
       try {
-        const {error} = await db.auth.resetPasswordForEmail(email);
-        if(error) throw error;
+        const { error } = await db.auth.resetPasswordForEmail(email);
+        if (error) throw error;
         setMsg('Se envió el enlace de recuperación.', 'success', 'login');
       } catch (e) {
         console.error('reset error:', e);
@@ -997,12 +895,8 @@
       }
     }
 
-    async function logout(){
-      try {
-        await db.auth.signOut();
-      } catch (e) {
-        console.error('logout error:', e);
-      }
+    async function logout() {
+      try { await db.auth.signOut(); } catch (e) { console.error('logout error:', e); }
       window.location.reload();
     }
 
