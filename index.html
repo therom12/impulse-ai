@@ -100,10 +100,13 @@
     }
     .msg {
       min-height: 18px;
-      color: #ffe4a8;
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: .92rem;
+      line-height: 1.4;
+      color: #ffe4a8;
     }
+    .msg.error { color: #fca5a5; }
+    .msg.success { color: #a7f3d0; }
     .app { display: flex; min-height: 100vh; }
     .side {
       width: 260px;
@@ -650,9 +653,22 @@
     const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado'};
     const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
     const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).format(Number(x||0));
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function setMsg(text, type='error') {
+      const el = document.getElementById('msg');
+      if (!el) return;
+      el.textContent = text || '';
+      el.classList.remove('error', 'success');
+      if (text) el.classList.add(type === 'success' ? 'success' : 'error');
+    }
+
+    function validateEmail(email) {
+      return typeof email === 'string' && emailPattern.test(email.trim());
+    }
 
     async function init(){
-      const loginView=document.getElementById('login'), appView=document.getElementById('app'), msgEl=document.getElementById('msg');
+      const loginView=document.getElementById('login'), appView=document.getElementById('app');
       try{
         const {data:{session},error:sessionError}=await db.auth.getSession();
         if(sessionError) throw sessionError;
@@ -663,17 +679,18 @@
         user=currentUser;
         const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
         if(q.error) throw q.error;
-        if(!q.data){msgEl.textContent='Tu cuenta todavía no tiene un negocio asociado.';loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        if(!q.data){setMsg('Tu cuenta todavía no tiene un negocio asociado.', 'error');loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
         biz=q.data.businesses;
         document.getElementById('biz').textContent=biz.name;
         loginView.classList.add('hidden');appView.classList.remove('hidden');
+        setMsg('', 'error');
         await load();
         show('dashboard');
         return true;
       }catch(e){
         console.error('init auth:',e);
         loginView.classList.remove('hidden');appView.classList.add('hidden');
-        msgEl.textContent='Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.');
+        setMsg('Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.'), 'error');
         return false;
       }
     }
@@ -868,35 +885,111 @@
     function sendAgent(){ const q=document.getElementById('agentInput').value.trim(); if(!q) return; addAgentMessage('user', q); document.getElementById('agentInput').value=''; setTimeout(()=>addAgentMessage('ai', agentAnswer(q)), 180); }
 
     async function login(){
-      const emailEl=document.getElementById('email'), passEl=document.getElementById('pass'), msgEl=document.getElementById('msg'), btn=document.querySelector('#login .btn');
-      const emailValue=emailEl.value.trim(), passValue=passEl.value;
-      msgEl.textContent='';
-      if(!emailValue||!passValue){ msgEl.textContent='Ingresá email y contraseña.'; return; }
+      const emailEl=document.getElementById('email');
+      const passEl=document.getElementById('pass');
+      const emailValue=emailEl.value.trim();
+      const passValue=passEl.value;
+      const btn=document.querySelector('#login .btn');
+
+      if(!emailValue || !passValue){
+        setMsg('Ingresá email y contraseña.', 'error');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error');
+        return;
+      }
+      if(passValue.length < 6){
+        setMsg('La contraseña debe tener al menos 6 caracteres.', 'error');
+        return;
+      }
+
       btn.disabled=true; btn.textContent='Ingresando...';
       try{
         const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
-        if(error) throw error;
-        if(!data.session){ msgEl.textContent='No se creó una sesión. Verificá tu email si la confirmación está activada.'; return; }
+        if(error){
+          const message = error.message || '';
+          if(message.includes('Invalid login credentials')) {
+            setMsg('Email o contraseña incorrectos.', 'error');
+          } else if(message.includes('Email not confirmed')) {
+            setMsg('Debes confirmar tu correo antes de iniciar sesión. Revisá tu bandeja de entrada.', 'error');
+          } else if(message.includes('too many requests')) {
+            setMsg('Demasiados intentos. Esperá unos segundos antes de volver a probar.', 'error');
+          } else {
+            setMsg(message || 'No se pudo iniciar sesión.', 'error');
+          }
+          return;
+        }
+        if(!data.session){
+          setMsg('No se creó una sesión. Verificá tu email si la confirmación está activada.', 'error');
+          return;
+        }
+        setMsg('Inicio de sesión correcto.', 'success');
         await init();
-      }catch(e){ msgEl.textContent=e.message||'No se pudo iniciar sesión.'; console.error('login:',e); }
-      finally{ btn.disabled=false; btn.textContent='Iniciar sesión'; }
+      }catch(e){
+        setMsg(e.message || 'No se pudo iniciar sesión.', 'error');
+        console.error('login:',e);
+      } finally {
+        btn.disabled=false; btn.textContent='Iniciar sesión';
+      }
     }
 
     async function signup(){
       const emailValue=document.getElementById('email').value.trim();
       const passValue=document.getElementById('pass').value;
-      const msgEl=document.getElementById('msg');
-      if(!emailValue||!passValue){ msgEl.textContent='Ingresá email y contraseña para crear la cuenta.'; return; }
-      const r=await db.auth.signUp({email:emailValue,password:passValue,emailRedirectTo:location.origin});
-      msgEl.textContent=r.error?r.error.message:'Cuenta creada. Revisá tu email para confirmar.';
+
+      if(!emailValue || !passValue){
+        setMsg('Ingresá email y contraseña para crear la cuenta.', 'error');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error');
+        return;
+      }
+      if(passValue.length < 6){
+        setMsg('La contraseña debe tener al menos 6 caracteres.', 'error');
+        return;
+      }
+
+      try{
+        const r=await db.auth.signUp({email:emailValue,password:passValue,emailRedirectTo:location.origin});
+        if(r.error){
+          const message = r.error.message || '';
+          if(message.includes('already registered') || message.includes('already exists')) {
+            setMsg('Ese email ya está registrado. Probá iniciar sesión.', 'error');
+          } else if(message.includes('Password')) {
+            setMsg('La contraseña no cumple los requisitos.', 'error');
+          } else {
+            setMsg(message || 'No se pudo crear la cuenta.', 'error');
+          }
+          return;
+        }
+        setMsg('Cuenta creada correctamente. Revisá tu email para confirmar la cuenta.', 'success');
+      }catch(e){
+        setMsg(e.message || 'No se pudo crear la cuenta.', 'error');
+      }
     }
 
     async function resetPassword(){
       const emailValue=document.getElementById('email').value.trim();
-      const msgEl=document.getElementById('msg');
-      if(!emailValue){ msgEl.textContent='Ingresá tu email para recuperar la contraseña.'; return; }
-      const r=await db.auth.resetPasswordForEmail(emailValue, { redirectTo: location.origin });
-      msgEl.textContent=r.error?r.error.message:'Email de recuperación enviado.';
+      if(!emailValue){
+        setMsg('Ingresá tu email para recuperar la contraseña.', 'error');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error');
+        return;
+      }
+      try{
+        const r=await db.auth.resetPasswordForEmail(emailValue, { redirectTo: location.origin });
+        if(r.error){
+          setMsg(r.error.message || 'No se pudo enviar la recuperación.', 'error');
+          return;
+        }
+        setMsg('Se envió un email para recuperar la contraseña.', 'success');
+      }catch(e){
+        setMsg(e.message || 'No se pudo enviar la recuperación.', 'error');
+      }
     }
 
     async function logout(){ await db.auth.signOut(); location.reload(); }
