@@ -915,8 +915,8 @@ function renderRisk(){
   if(opsEl) opsEl.textContent = total;
   if(volumeEl) volumeEl.textContent = money(volume);
   if(scoreEl) scoreEl.textContent = riskScore + '/100';
-  if(alertsEl) alertsEl.textContent = alerts;
-          }
+  if(alertsEl) alertsEl.textContent = alerts; 
+}
     function show(id){
       ['dashboard','sales','expenses','customers','agent'].forEach(x => document.getElementById(x).classList.toggle('hidden', x !== id));
       document.getElementById('title').textContent = {dashboard:'Panel',sales:'Ventas',expenses:'Gastos',customers:'Clientes',agent:'IA'}[id] || 'Panel';
