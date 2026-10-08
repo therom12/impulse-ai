@@ -534,7 +534,17 @@
       return Object.values(bucket).map(item => ({ label: item.label, revenue: item.revenue, orders: item.orders }));
     }
 
+    function percentDelta(current, previous) {
+      if (!previous || previous === 0) return current > 0 ? 100 : 0;
+      return ((current - previous) / previous) * 100;
+    }
+
     function buildBusinessContext() {
+      const months = getMonthlySummary();
+      const currentMonthRevenue = months.length ? months[months.length - 1].revenue : 0;
+      const previousMonthRevenue = months.length > 1 ? months[months.length - 2].revenue : 0;
+      const currentMonthProfit = currentMonthRevenue * 0.42;
+      const previousMonthProfit = previousMonthRevenue * 0.42;
       const paid = orders.filter(x => x.payment_status === 'paid');
       const unpaid = orders.filter(x => x.payment_status !== 'paid');
       const totalRevenue = paid.reduce((sum, x) => sum + Number(x.total || 0), 0);
@@ -551,6 +561,8 @@
 
       const scores = financialOperations.map(o => Number(o.risk_score)).filter(n => !isNaN(n));
       const risk = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+      const monthDelta = percentDelta(currentMonthRevenue, previousMonthRevenue);
+      const profitDelta = percentDelta(currentMonthProfit, previousMonthProfit);
 
       return {
         business: biz?.name || 'Negocio',
@@ -567,7 +579,11 @@
         topCustomer: topCustomer ? `${topCustomer.name} (${money(topCustomer.spent)})` : 'Sin clientes',
         alerts: financialAlerts.length,
         risk,
-        monthly: getMonthlySummary(),
+        monthly: months,
+        monthDelta,
+        profitDelta,
+        previousMonthRevenue,
+        currentMonthRevenue,
         storage: {
           openAlerts: financialAlerts.filter(a => a.status === 'open' || a.status === 'reviewing').length,
           activeOperations: financialOperations.length
@@ -585,40 +601,48 @@
       return recs.slice(0, 3);
     }
 
-    function localAgentResponse(q, context) {
-      const x = q.toLowerCase();
+    function localAgentResponse(question, context) {
+      const q = question.toLowerCase();
       const totalRevenue = context.revenue;
       const profit = context.profit;
       const grossMargin = context.grossMargin;
       const collectionRate = context.collectionRate;
       const risk = context.risk;
       const recommendations = buildRecommendations(context);
+      const monthTrend = context.monthDelta >= 0 ? 'subió' : 'bajó';
+      const trendValue = Math.abs(context.monthDelta).toFixed(1);
 
-      if (x.includes('venta') || x.includes('ingreso') || x.includes('mes') || x.includes('ingresos')) {
-        return `En este negocio, los ingresos del período ascienden a ${money(totalRevenue)}. Hay ${context.totalOrders} pedidos registrados y ${context.paidOrders} ya están cobrados. El flujo se ve ${collectionRate >= 75 ? 'sólido' : 'con atención'} y la recomendación es ${recommendations[0].toLowerCase()}`;
+      const intro = `Diagnóstico: el negocio está ${risk > 60 ? 'en riesgo moderado' : risk > 40 ? 'bajo control con algunas señales de atención' : 'estable'}; en el período registrás ${money(totalRevenue)} de ingresos y ${money(profit)} de utilidad.`;
+
+      const riskText = `Riesgo: el score actual es ${risk}/100, la cobranza efectiva está en ${collectionRate.toFixed(1)}% y el mes ${monthTrend} ${trendValue}% respecto al anterior.`;
+
+      const recText = `Recomendación: ${recommendations[0]}`;
+
+      if (q.includes('venta') || q.includes('ingreso') || q.includes('mes') || q.includes('ingresos')) {
+        return `${intro} ${riskText} ${recText}`;
       }
 
-      if (x.includes('margen') || x.includes('utilidad') || x.includes('rentabilidad')) {
-        return `El margen bruto estimado es de ${grossMargin.toFixed(1)}%. La utilidad neta proyectada es de ${money(profit)}. Para sostenerlo, conviene ${recommendations[1] ? recommendations[1].toLowerCase() : recommendations[0].toLowerCase()}`;
+      if (q.includes('margen') || q.includes('utilidad') || q.includes('rentabilidad')) {
+        return `Diagnóstico: el margen bruto estimado es de ${grossMargin.toFixed(1)}% y la utilidad proyectada es de ${money(profit)}. Riesgo: el comportamiento operativo es ${risk > 50 ? 'precario' : 'aceptable'}, con cobro del ${collectionRate.toFixed(1)}%. Recomendación: ${recommendations[1] ? recommendations[1] : recommendations[0]}`;
       }
 
-      if (x.includes('cliente') || x.includes('clientes')) {
-        return `Actualmente tenés ${context.customers} clientes registrados y el principal es ${context.topCustomer}. El ticket promedio es ${money(context.avgTicket)}. La estrategia ideal es reforzar tus clientes VIP y aumentar la retención.`;
+      if (q.includes('cliente') || q.includes('clientes')) {
+        return `Diagnóstico: tenés ${context.customers} clientes registrados y el principal es ${context.topCustomer}. Riesgo: la retención y ticket promedio deben reforzarse para sostener volumen. Recomendación: ${recommendations[2] || recommendations[0]}`;
       }
 
-      if (x.includes('cobranza') || x.includes('cobro') || x.includes('moros')) {
-        return `La cobranza efectiva está en ${collectionRate.toFixed(1)}%. Eso indica ${collectionRate >= 80 ? 'un nivel saludable' : 'necesidad de reforzar seguimiento'} de pagos. Recomendación: ${recommendations[0].toLowerCase()}`;
+      if (q.includes('cobranza') || q.includes('cobro') || q.includes('moros')) {
+        return `Diagnóstico: la cobranza efectiva está en ${collectionRate.toFixed(1)}% y el monto pendiente es ${money(context.pendingRevenue)}. Riesgo: hay presión de flujo si no se acelera la gestión comercial. Recomendación: ${recommendations[0]}`;
       }
 
-      if (x.includes('riesgo') || x.includes('alerta')) {
-        return `El score de riesgo actual es ${risk}/100 con ${context.alerts} alertas abiertas. La situación es ${risk > 60 ? 'requiere atención inmediata' : risk > 40 ? 'moderada' : 'estable'}. ${recommendations[0]}`;
+      if (q.includes('riesgo') || q.includes('alerta')) {
+        return `Diagnóstico: hay ${context.alerts} alertas abiertas y un score de riesgo de ${risk}/100. Riesgo: la operación requiere atención de cobranza y costos. Recomendación: ${recommendations[0]}`;
       }
 
-      if (x.includes('recomend') || x.includes('qué harías') || x.includes('acción')) {
-        return `Mi recomendación principal es: ${recommendations[0]}. También sugeriría ${recommendations[1] || recommendations[0]}. Y en tercer lugar, ${recommendations[2] || recommendations[1] || recommendations[0]}.`;
+      if (q.includes('recomend') || q.includes('qué harías') || q.includes('acción')) {
+        return `Diagnóstico: el negocio muestra ${money(totalRevenue)} en ingresos, ${money(profit)} de utilidad y un margen bruto de ${grossMargin.toFixed(1)}%. Riesgo: la principal presión es ${collectionRate < 80 ? 'la cobranza' : 'la disciplina de costos'}. Recomendación: ${recommendations[0]} También conviene ${recommendations[1] || recommendations[0]}.`;
       }
 
-      return `El negocio tiene ${money(context.revenue)} en ingresos, ${money(context.profit)} de utilidad y una cobranza del ${collectionRate.toFixed(1)}%. El riesgo actual es ${risk}/100. Mi recomendación principal es ${recommendations[0].toLowerCase()}.`;
+      return `${intro} ${riskText} ${recText}`;
     }
 
     function renderContext() {
@@ -641,7 +665,7 @@
           model,
           temperature: 0.4,
           messages: [
-            { role: 'system', content: 'Sos un analista financiero para PYMES. Respondés en español, en un tono profesional, claro y breve. Usás los datos del negocio entregados. No inventes información. Si faltan datos, decilo. Da recomendaciones accionables. Incluí métricas con formato monetario en pesos argentinos.' },
+            { role: 'system', content: 'Sos un analista financiero para PYMES. Respondés en español, en un tono profesional, claro y breve. Usás los datos del negocio entregados. No inventes información. Si faltan datos, decilo. Da recomendaciones accionables. Incluí métricas con formato monetario en pesos argentinos. Estructurá la respuesta en 3 bloques: Diagnóstico, Riesgo y Recomendación. Usa frases cortas y concretas.' },
             { role: 'user', content: 'Contexto del negocio:\n' + JSON.stringify(context, null, 2) + '\n\nPregunta: ' + question }
           ]
         })
@@ -685,7 +709,7 @@
       const el = document.getElementById('chat');
       const d = document.createElement('div');
       d.className = 'bubble ' + (who === 'user' ? 'userbubble' : 'aibubble');
-      d.innerHTML = '<div class="small">' + (who === 'user' ? 'Tú' : 'IA') + '</div><div>' + esc(text) + '</div>';
+      d.innerHTML = '<div class="small">' + (who === 'user' ? 'Tú' : 'IA') + '</div><div>' + esc(text).replace(/\n/g, '<br>') + '</div>';
       el.appendChild(d);
       el.scrollTop = el.scrollHeight;
     }
