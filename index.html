@@ -817,7 +817,12 @@ let financialAnalyses=[];
         user=currentUser;
         const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
         if(q.error) throw q.error;
-        if(!q.data){setMsg('Tu cuenta todavía no tiene un negocio asociado.', 'error', 'login');loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        if(!q.data){
+  loginView.classList.add('hidden');
+  appView.classList.add('hidden');
+  document.getElementById('setup').classList.remove('hidden');
+  return false;
+}
         biz=q.data.businesses;
         document.getElementById('biz').textContent=biz.name;
         loginView.classList.add('hidden');appView.classList.remove('hidden');
