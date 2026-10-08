@@ -7,31 +7,36 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #07131d;
-      --bg-2: #0d1d2a;
-      --panel: rgba(13, 29, 42, 0.94);
-      --panel-2: #112635;
-      --soft: #17334a;
-      --line: rgba(164, 191, 214, 0.15);
+      --bg-1: #040d17;
+      --bg-2: #0a1723;
+      --bg-3: #101f2d;
+      --panel: rgba(12, 22, 31, 0.76);
+      --panel-strong: rgba(14, 26, 36, 0.92);
+      --glass: rgba(255,255,255,0.04);
+      --line: rgba(160, 191, 214, 0.14);
       --text: #edf7ff;
-      --muted: #9eb8c9;
+      --muted: #9db7c9;
       --primary: #6ee7b7;
       --primary-2: #34d399;
       --accent: #63b3ff;
       --warning: #fbbf24;
       --danger: #f87171;
       --success: #22c55e;
-      --shadow: 0 18px 40px rgba(2,6,23,.42);
-      --radius: 18px;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+      --radius: 24px;
     }
 
     * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       min-height: 100%;
-      background: linear-gradient(135deg, #040d17 0%, #07131d 50%, #0a1a2e 100%);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(110,231,183,0.12), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(99,179,255,0.12), transparent 30%),
+        linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
       color: var(--text);
-      font: 15px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body { min-height: 100vh; }
@@ -43,59 +48,96 @@
       min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 24px;
+      padding: 26px;
       position: relative;
-      background: radial-gradient(circle at 20% 50%, rgba(110,231,183,.08) 0%, transparent 40%),
-                  radial-gradient(circle at 80% 20%, rgba(99,179,255,.08) 0%, transparent 35%);
+      overflow: hidden;
     }
 
-    .login::before {
+    .login::before,
+    .login::after {
       content: "";
       position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at top left, rgba(110,231,183,.04) 0%, transparent 60%);
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.25;
       pointer-events: none;
     }
 
+    .login::before {
+      width: 420px;
+      height: 420px;
+      left: -130px;
+      top: 40px;
+      background: rgba(110,231,183,0.16);
+    }
+
+    .login::after {
+      width: 480px;
+      height: 480px;
+      right: -160px;
+      bottom: -80px;
+      background: rgba(99,179,255,0.14);
+    }
+
     .login .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      width: min(1200px, 100%);
-      align-items: center;
-      z-index: 2;
       position: relative;
+      z-index: 1;
+      width: min(1180px, 100%);
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 42px;
+      align-items: center;
     }
 
     .login .hero {
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 22px;
+      padding: 12px 10px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(110, 231, 183, 0.08);
+      border: 1px solid rgba(110,231,183,0.2);
     }
 
     .login .hero h1 {
-      font-size: 3.5rem;
-      font-weight: 900;
-      line-height: 1.1;
       margin: 0;
-      letter-spacing: -0.04em;
-      background: linear-gradient(135deg, #6ee7b7, #34d399, #63b3ff);
+      font-size: clamp(2.7rem, 5vw, 5.1rem);
+      line-height: 0.95;
+      font-weight: 900;
+      letter-spacing: -0.06em;
+      background: linear-gradient(135deg, #c2ffe8 0%, var(--primary) 28%, #9ed0ff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .login .hero p {
-      font-size: 1.1rem;
-      color: var(--muted);
       margin: 0;
-      line-height: 1.6;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 1.12rem;
+      line-height: 1.7;
     }
 
     .login .features {
       display: grid;
+      grid-template-columns: repeat(2, minmax(200px, 1fr));
       gap: 16px;
-      margin-top: 12px;
+      margin-top: 8px;
+      max-width: 620px;
     }
 
     .feature {
@@ -103,7 +145,11 @@
       align-items: center;
       gap: 12px;
       color: var(--muted);
-      font-size: .95rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-weight: 600;
     }
 
     .feature::before {
@@ -114,208 +160,279 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: rgba(110,231,183,.1);
-      color: var(--primary);
       font-weight: 900;
+      color: var(--primary);
+      background: rgba(110,231,183,0.12);
+      border: 1px solid rgba(110,231,183,0.15);
     }
 
     .login .box {
-      width: 100%;
-      background: rgba(10,20,29,.88);
-      border: 1px solid rgba(110,231,183,.16);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.3), inset 0 1px 0 rgba(110,231,183,.1);
-      padding: 28px 26px;
-      position: relative;
+      width: min(100%, 460px);
+      justify-self: end;
+      background: rgba(7, 17, 24, 0.72);
+      border: 1px solid rgba(154, 194, 219, 0.14);
+      border-radius: var(--radius);
+      padding: 26px 24px 22px;
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .brand {
-      font-size: 1.8rem;
-      font-weight: 900;
-      letter-spacing: .08em;
-      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 8px;
+      font-size: 1.7rem;
+      font-weight: 900;
+      letter-spacing: .09em;
+      margin-bottom: 18px;
     }
 
     .brand b {
       color: var(--primary);
-      display: inline-block;
       animation: pulse 2s ease-in-out infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: .7; }
-    }
-
-    .login h2 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-      background: linear-gradient(135deg, var(--text), var(--muted));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .login p {
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: .95rem;
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.04); }
     }
 
     .tabs {
       display: flex;
       gap: 8px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--line);
-      padding-bottom: 16px;
+      padding: 8px;
+      margin: 0 0 18px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 14px;
     }
 
     .tab-btn {
+      flex: 1;
       background: transparent;
-      color: var(--muted);
       border: none;
-      padding: 8px 12px;
-      font-weight: 700;
-      font-size: .9rem;
-      cursor: pointer;
-      position: relative;
-      transition: color .3s ease;
-      border-radius: 8px;
+      border-radius: 10px;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: .02em;
+      transition: all 0.2s ease;
     }
 
     .tab-btn.active {
-      color: var(--primary);
+      background: linear-gradient(135deg, rgba(110,231,183,0.18), rgba(99,179,255,0.12));
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(110,231,183,0.18);
     }
 
-    .tab-btn.active::after {
-      content: "";
-      position: absolute;
-      bottom: -16px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--primary), var(--primary-2));
-      border-radius: 2px;
+    .form-group { display: none; }
+    .form-group.active { display: grid; gap: 14px; }
+
+    .login h2 {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      letter-spacing: -0.04em;
+    }
+
+    .login p.subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.6;
     }
 
     .field {
       display: grid;
-      gap: 12px;
-      margin-top: 16px;
+      gap: 8px;
+      margin-top: 2px;
     }
 
     .field label {
       color: var(--muted);
-      font-size: .85rem;
-      font-weight: 700;
+      font-size: 0.75rem;
       text-transform: uppercase;
-      letter-spacing: .05em;
-      display: block;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .input-wrap {
+      position: relative;
     }
 
     .field input {
       width: 100%;
-      background: rgba(9,18,25,.6);
-      border: 1px solid rgba(110,231,183,.12);
+      background: rgba(8, 16, 22, 0.72);
+      border: 1px solid rgba(110,231,183,0.12);
       border-radius: 14px;
-      padding: 14px 16px;
       color: var(--text);
+      padding: 14px 44px 14px 14px;
       outline: none;
-      font-size: 1rem;
-      transition: all .2s ease;
+      transition: all 0.2s ease;
     }
 
     .field input::placeholder {
-      color: rgba(158,184,201,.5);
+      color: rgba(157, 183, 201, 0.6);
     }
 
     .field input:focus {
-      border-color: rgba(110,231,183,.36);
-      box-shadow: 0 0 0 4px rgba(110,231,183,.1);
-      background: rgba(9,18,25,.8);
+      border-color: rgba(110,231,183,0.4);
+      box-shadow: 0 0 0 4px rgba(110,231,183,0.08);
+      background: rgba(8, 16, 22, 0.9);
     }
 
-    .form-group { display: none; }
-    .form-group.active { display: grid; gap: 16px; }
+    .toggle-pass {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 6px;
+    }
 
     .btn, .secondary {
       border: 0;
       border-radius: 14px;
-      padding: 13px 18px;
-      font-weight: 700;
-      font-size: .95rem;
-      transition: all .3s ease;
+      padding: 14px 16px;
+      font-weight: 800;
+      font-size: 0.92rem;
+      letter-spacing: .04em;
       text-transform: uppercase;
-      letter-spacing: .05em;
+      transition: all 0.2s ease;
     }
 
     .btn {
+      width: 100%;
       background: linear-gradient(135deg, var(--primary), var(--primary-2));
       color: #062a1d;
-      width: 100%;
-      margin-top: 20px;
-      box-shadow: 0 8px 16px rgba(110,231,183,.2);
+      box-shadow: 0 12px 20px rgba(110,231,183,0.18);
+      margin-top: 8px;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(110,231,183,.3);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
+      box-shadow: 0 18px 24px rgba(110,231,183,0.22);
     }
 
     .secondary {
-      background: rgba(110,231,183,.08);
+      width: 100%;
+      background: rgba(110,231,183,0.08);
       color: var(--text);
-      border: 1px solid rgba(110,231,183,.2);
+      border: 1px solid rgba(110,231,183,0.18);
     }
 
     .secondary:hover {
-      background: rgba(110,231,183,.12);
-      border-color: rgba(110,231,183,.36);
+      background: rgba(110,231,183,0.12);
+      border-color: rgba(110,231,183,0.32);
     }
 
     .msg {
-      min-height: 20px;
-      margin-top: 16px;
-      padding: 12px 14px;
-      font-size: .9rem;
-      line-height: 1.4;
-      color: #ffe4a8;
-      background: rgba(251,191,36,.08);
-      border: 1px solid rgba(251,191,36,.2);
-      border-radius: 12px;
       display: none;
+      min-height: 18px;
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: .88rem;
+      line-height: 1.45;
+      border: 1px solid transparent;
     }
 
     .msg.show { display: block; }
     .msg.error {
-      color: #fca5a5;
-      background: rgba(248,113,113,.08);
-      border-color: rgba(248,113,113,.2);
+      color: #f9b5b5;
+      background: rgba(248,113,113,0.08);
+      border-color: rgba(248,113,113,0.24);
     }
     .msg.success {
-      color: #a7f3d0;
-      background: rgba(34,197,94,.08);
-      border-color: rgba(34,197,94,.2);
+      color: #baf5d5;
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.28);
     }
 
-    @media (max-width: 1024px) {
-      .login .container { grid-template-columns: 1fr; }
-      .login .hero { display: none; }
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 30px 18px;
+      background: radial-gradient(circle at top, rgba(110,231,183,0.06), transparent 38%);
     }
 
-    @media (max-width: 700px) {
+    .app-card {
+      width: min(880px, 100%);
+      background: rgba(8,17,24,0.72);
+      border: 1px solid rgba(154, 194, 219, 0.12);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 38px 28px;
+      text-align: center;
+    }
+
+    .app-card .brand {
+      justify-content: center;
+      margin-bottom: 6px;
+    }
+
+    .app-card h2 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.05em;
+    }
+
+    .app-card p {
+      margin: 0 auto 24px;
+      max-width: 540px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .app-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .app-actions .btn {
+      width: auto;
+      margin-top: 0;
+      min-width: 220px;
+    }
+
+    @media (max-width: 960px) {
+      .login .container {
+        grid-template-columns: 1fr;
+      }
+
+      .login .hero {
+        padding: 0;
+        text-align: center;
+        align-items: center;
+      }
+
+      .login .features {
+        grid-template-columns: 1fr;
+        width: min(440px, 100%);
+      }
+
+      .login .box {
+        justify-self: center;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .login { padding: 18px 14px; }
       .login .box { padding: 22px 18px; }
-      .brand { font-size: 1.5rem; }
-      .login h2 { font-size: 1.5rem; }
+      .brand { font-size: 1.45rem; }
+      .tabs { padding: 6px; }
+      .tab-btn { font-size: 0.82rem; }
+      .btn, .secondary { padding: 13px 14px; }
+      .app-card { padding: 28px 18px; }
     }
   </style>
 </head>
@@ -323,8 +440,9 @@
   <div id="login" class="login">
     <div class="container">
       <div class="hero">
+        <div class="eyebrow">• IA financiera</div>
         <h1>Finanzas inteligentes</h1>
-        <p>Panel de control financiero con IA integrada para optimizar tus decisiones de negocio.</p>
+        <p>Controlá ventas, flujo de caja, clientes y riesgo con un panel pensado para crecer negocios con claridad y velocidad.</p>
         <div class="features">
           <div class="feature">Dashboard en tiempo real</div>
           <div class="feature">Análisis de flujo de caja</div>
@@ -335,6 +453,7 @@
 
       <div class="box">
         <div class="brand">IMPULSE <b>AI</b></div>
+
         <div class="tabs">
           <button type="button" class="tab-btn active" onclick="switchTab('login')">Acceder</button>
           <button type="button" class="tab-btn" onclick="switchTab('signup')">Registrarse</button>
@@ -342,40 +461,53 @@
 
         <div id="login-form" class="form-group active">
           <h2>Bienvenido de vuelta</h2>
-          <p>Ingresá con tu cuenta para continuar.</p>
+          <p class="subtitle">Ingresá con tu cuenta para continuar.</p>
 
           <div class="field">
             <label for="email-login">Email</label>
-            <input id="email-login" type="email" placeholder="tu@email.com" autocomplete="email">
+            <div class="input-wrap">
+              <input id="email-login" type="email" placeholder="tu@email.com" autocomplete="email">
+            </div>
           </div>
 
           <div class="field">
             <label for="pass-login">Contraseña</label>
-            <input id="pass-login" type="password" placeholder="••••••••" autocomplete="current-password">
+            <div class="input-wrap">
+              <input id="pass-login" type="password" placeholder="••••••••" autocomplete="current-password">
+              <button type="button" class="toggle-pass" onclick="togglePassword('pass-login', this)">Ver</button>
+            </div>
           </div>
 
           <button class="btn" type="button" onclick="login()">Iniciar sesión</button>
-          <button class="secondary" type="button" style="margin-top: 8px; width: 100%;" onclick="resetPassword()">Recuperar contraseña</button>
+          <button class="secondary" type="button" onclick="resetPassword()">Recuperar contraseña</button>
           <div id="msg-login" class="msg"></div>
         </div>
 
         <div id="signup-form" class="form-group">
           <h2>Crear cuenta</h2>
-          <p>Comenzá tu prueba gratuita sin necesidad de tarjeta.</p>
+          <p class="subtitle">Comenzá tu prueba gratuita sin necesidad de tarjeta.</p>
 
           <div class="field">
             <label for="email-signup">Email</label>
-            <input id="email-signup" type="email" placeholder="tu@email.com" autocomplete="email">
+            <div class="input-wrap">
+              <input id="email-signup" type="email" placeholder="tu@email.com" autocomplete="email">
+            </div>
           </div>
 
           <div class="field">
             <label for="pass-signup">Contraseña</label>
-            <input id="pass-signup" type="password" placeholder="Mín. 6 caracteres" autocomplete="new-password">
+            <div class="input-wrap">
+              <input id="pass-signup" type="password" placeholder="Mín. 6 caracteres" autocomplete="new-password">
+              <button type="button" class="toggle-pass" onclick="togglePassword('pass-signup', this)">Ver</button>
+            </div>
           </div>
 
           <div class="field">
             <label for="pass-confirm">Confirmar contraseña</label>
-            <input id="pass-confirm" type="password" placeholder="••••••••" autocomplete="new-password">
+            <div class="input-wrap">
+              <input id="pass-confirm" type="password" placeholder="••••••••" autocomplete="new-password">
+              <button type="button" class="toggle-pass" onclick="togglePassword('pass-confirm', this)">Ver</button>
+            </div>
           </div>
 
           <button class="btn" type="button" onclick="signup()">Crear cuenta</button>
@@ -386,10 +518,10 @@
   </div>
 
   <div id="setup" class="login hidden">
-    <div class="box" style="max-width:520px;margin:auto">
+    <div class="box" style="max-width:520px; margin:auto;">
       <div class="brand">IMPULSE <b>AI</b></div>
       <h2>Configurá tu empresa</h2>
-      <p>Antes de entrar al panel, creá el negocio que vas a administrar.</p>
+      <p class="subtitle">Antes de entrar al panel, creá el negocio que vas a administrar.</p>
 
       <div class="field">
         <label for="business-name">Nombre de la empresa</label>
@@ -403,17 +535,18 @@
 
       <button class="btn" type="button" onclick="createBusiness()">Crear empresa y continuar</button>
       <div id="msg-setup" class="msg"></div>
-      <button class="secondary" type="button" style="margin-top:8px;width:100%" onclick="logout()">Cerrar sesión</button>
+      <button class="secondary" type="button" style="margin-top:8px;" onclick="logout()">Cerrar sesión</button>
     </div>
   </div>
 
-  <div id="app" class="hidden" style="display:none; min-height:100vh; background: #07131d; color: #edf7ff;">
-    <div style="width:100%; max-width: 1100px; margin: 0 auto; padding: 40px 20px;">
-      <div style="text-align:center; padding-top: 60px;">
-        <div class="brand" style="justify-content:center; margin-bottom: 12px;">IMPULSE <b>AI</b></div>
-        <h2 style="margin: 0 0 16px; font-size: 2.2rem;">Panel cargado correctamente</h2>
-        <p style="margin: 0 0 22px; color: var(--muted);">La sesión quedó activa y el login ya no bloquea el acceso.</p>
-        <button class="btn" type="button" onclick="logout()" style="max-width: 260px; display: inline-block; margin-top: 0;">Cerrar sesión</button>
+  <div id="app" class="hidden app-shell" style="display:none;">
+    <div class="app-card">
+      <div class="brand">IMPULSE <b>AI</b></div>
+      <h2>Panel activo</h2>
+      <p>La sesión quedó habilitada y el sistema ya está listo para mostrar el dashboard completo.</p>
+      <div class="app-actions">
+        <button class="btn" type="button" onclick="window.location.reload()">Continuar</button>
+        <button class="secondary" type="button" onclick="logout()">Cerrar sesión</button>
       </div>
     </div>
   </div>
@@ -428,6 +561,14 @@
     let user = null;
     let biz = null;
 
+    function togglePassword(inputId, button) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      button.textContent = show ? 'Ocultar' : 'Ver';
+    }
+
     function switchTab(tab) {
       document.querySelectorAll('.form-group').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -435,8 +576,8 @@
       const form = document.getElementById(tab + '-form');
       if (form) form.classList.add('active');
 
-      const btn = document.querySelector('.tab-btn[onclick*="' + tab + '"]');
-      if (btn) btn.classList.add('active');
+      const activeBtn = document.querySelector('.tab-btn[onclick*="' + tab + '"]');
+      if (activeBtn) activeBtn.classList.add('active');
     }
 
     function setMsg(text, type = 'error', context = 'login') {
@@ -467,6 +608,7 @@
           loginView.classList.remove('hidden');
           appView.classList.add('hidden');
           setupView.classList.add('hidden');
+          appView.style.display = 'none';
           return;
         }
 
@@ -477,6 +619,7 @@
           loginView.classList.remove('hidden');
           appView.classList.add('hidden');
           setupView.classList.add('hidden');
+          appView.style.display = 'none';
           return;
         }
 
@@ -502,7 +645,7 @@
         loginView.classList.add('hidden');
         setupView.classList.add('hidden');
         appView.classList.remove('hidden');
-        appView.style.display = 'block';
+        appView.style.display = 'grid';
       } catch (e) {
         console.error('init auth error:', e);
         document.getElementById('login').classList.remove('hidden');
@@ -529,6 +672,7 @@
         if (error) throw error;
 
         user = data.user;
+
         const { data: businessRow, error: businessError } = await db
           .from('business_members')
           .select('business_id, businesses(*)')
@@ -547,8 +691,9 @@
         biz = businessRow.businesses;
         document.getElementById('login').classList.add('hidden');
         document.getElementById('setup').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('app').style.display = 'block';
+        const appView = document.getElementById('app');
+        appView.classList.remove('hidden');
+        appView.style.display = 'grid';
       } catch (e) {
         console.error('login error:', e);
         setMsg('No se pudo iniciar sesión: ' + (e.message || 'Credenciales inválidas.'), 'error', 'login');
@@ -633,8 +778,9 @@
 
         biz = businessData;
         document.getElementById('setup').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('app').style.display = 'block';
+        const appView = document.getElementById('app');
+        appView.classList.remove('hidden');
+        appView.style.display = 'grid';
       } catch (e) {
         console.error('create business error:', e);
         setMsg('No se pudo crear la empresa: ' + (e.message || 'Error desconocido.'), 'error', 'setup');
@@ -652,8 +798,10 @@
       biz = null;
       document.getElementById('login').classList.remove('hidden');
       document.getElementById('setup').classList.add('hidden');
-      document.getElementById('app').classList.add('hidden');
-      document.getElementById('app').style.display = 'none';
+      const appView = document.getElementById('app');
+      appView.classList.add('hidden');
+      appView.style.display = 'none';
+
       document.getElementById('email-login').value = '';
       document.getElementById('pass-login').value = '';
       document.getElementById('email-signup').value = '';
