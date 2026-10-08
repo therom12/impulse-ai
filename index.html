@@ -894,7 +894,29 @@ financialAnalyses=f.data||[];
       const recent = [...orders].sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0,4);
       document.getElementById('recentOrders').innerHTML = recent.length ? `<table><tbody>${recent.map(o => '<tr><td>' + esc(labels[o.status] || '—') + '</td><td>' + money(o.total || 0) + '</td></tr>').join('')}</tbody></table>` : '<p class="muted">No hay pedidos.</p>';
     }
+function renderRisk(){
+  const total = financialOperations.length;
+  const volume = financialOperations.reduce((s,o)=>s + Number(o.amount || 0),0);
+  const alerts = financialAlerts.length;
 
+  const scores = financialOperations
+    .map(o => Number(o.risk_score))
+    .filter(n => !isNaN(n));
+
+  const riskScore = scores.length
+    ? Math.round(scores.reduce((a,b)=>a+b,0) / scores.length)
+    : 0;
+
+  const opsEl = document.getElementById('riskOperations');
+  const volumeEl = document.getElementById('riskVolume');
+  const scoreEl = document.getElementById('riskScore');
+  const alertsEl = document.getElementById('riskAlerts');
+
+  if(opsEl) opsEl.textContent = total;
+  if(volumeEl) volumeEl.textContent = money(volume);
+  if(scoreEl) scoreEl.textContent = riskScore + '/100';
+  if(alertsEl) alertsEl.textContent = alerts;
+          }
     function show(id){
       ['dashboard','sales','expenses','customers','agent'].forEach(x => document.getElementById(x).classList.toggle('hidden', x !== id));
       document.getElementById('title').textContent = {dashboard:'Panel',sales:'Ventas',expenses:'Gastos',customers:'Clientes',agent:'IA'}[id] || 'Panel';
