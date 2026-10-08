@@ -292,6 +292,7 @@
       font-size: 0.82rem;
       font-weight: 700;
       padding: 4px 6px;
+      cursor: pointer;
     }
 
     .btn, .secondary {
@@ -552,14 +553,32 @@
   </div>
 
   <script>
-    const URL = 'https://ksuoodeqtjzjyuxkphsy.supabase.co';
-    const KEY = 'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
-    const db = window.supabase.createClient(URL, KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
-    });
-
+    // Variables globales
+    let db = null;
     let user = null;
     let biz = null;
+
+    // Inicializar Supabase cuando el script esté listo
+    function initializeSupabase() {
+      try {
+        db = window.supabase.createClient(
+          'https://ksuoodeqtjzjyuxkphsy.supabase.co',
+          'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF',
+          {
+            auth: { 
+              persistSession: true, 
+              autoRefreshToken: true, 
+              detectSessionInUrl: true 
+            }
+          }
+        );
+        console.log('Supabase inicializado correctamente');
+        return true;
+      } catch (e) {
+        console.error('Error al inicializar Supabase:', e);
+        return false;
+      }
+    }
 
     function togglePassword(inputId, button) {
       const input = document.getElementById(inputId);
@@ -596,6 +615,11 @@
     }
 
     async function init() {
+      if (!db) {
+        console.error('Supabase no está inicializado');
+        return;
+      }
+
       const loginView = document.getElementById('login');
       const appView = document.getElementById('app');
       const setupView = document.getElementById('setup');
@@ -654,6 +678,11 @@
     }
 
     async function login() {
+      if (!db) {
+        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'login');
+        return;
+      }
+
       const email = document.getElementById('email-login').value.trim();
       const pass = document.getElementById('pass-login').value;
 
@@ -701,6 +730,11 @@
     }
 
     async function signup() {
+      if (!db) {
+        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'signup');
+        return;
+      }
+
       const email = document.getElementById('email-signup').value.trim();
       const pass = document.getElementById('pass-signup').value;
       const confirm = document.getElementById('pass-confirm').value;
@@ -731,6 +765,11 @@
     }
 
     async function resetPassword() {
+      if (!db) {
+        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'login');
+        return;
+      }
+
       const email = document.getElementById('email-login').value.trim();
 
       if (!validateEmail(email)) {
@@ -749,6 +788,11 @@
     }
 
     async function createBusiness() {
+      if (!db) {
+        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'setup');
+        return;
+      }
+
       const name = document.getElementById('business-name').value.trim();
       const type = document.getElementById('business-type').value.trim();
 
@@ -789,7 +833,7 @@
 
     async function logout() {
       try {
-        await db.auth.signOut();
+        if (db) await db.auth.signOut();
       } catch (e) {
         console.error('logout error:', e);
       }
@@ -821,7 +865,18 @@
       }
     });
 
-    init();
+    // Esperar a que Supabase esté listo antes de inicializar
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        if (initializeSupabase()) {
+          init();
+        }
+      });
+    } else {
+      if (initializeSupabase()) {
+        init();
+      }
+    }
   </script>
 </body>
 </html>
