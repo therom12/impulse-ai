@@ -1,113 +1,1046 @@
 <!doctype html>
-<html lang="es">                                                                                           ><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IMPULSE AI</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#07111f;color:#eef6ff;font:15px system-ui,sans-serif}button,input,select,textarea{font:inherit;pointer-events:auto}button{cursor:pointer}.app{displa[...]
-</style></head><body>
-<div id="login" class="login"><div class="box"><div class="brand">IMPULSE <b>AI</b></div><h2>Entrar</h2><p class="muted">Panel inteligente para tu negocio.</p><input id="email" type="email" placeho[...]
-<div id="app" class="app hidden"><aside class="side"><div class="brand">IMPULSE <b>AI</b></div><nav class="nav">
-<button id="nDashboard" class="on" onclick="show('dashboard')">📊 Inicio</button><button id="nProducts" onclick="show('products')">📦 Productos</button><button id="nCustomers" onclick="show('c[...]
-<main class="main"><div class="top"><div><h1 id="title">Inicio</h1><span id="biz" class="muted"></span></div><button class="btn" onclick="openCustomer()">+ Cliente</button></div>
-<section id="dashboard"><div class="grid"><div class="card stat">Productos<b id="sp">0</b></div><div class="card stat">Clientes<b id="sc">0</b></div><div class="card stat">Pedidos<b id="so">0</b><[...]
-<section id="products" class="hidden"><div class="card"><div class="toolbar"><input id="ps" placeholder="Buscar producto..." oninput="renderProducts()"></div><div id="pt"></div></div></section>
-<section id="customers" class="hidden"><div class="crmgrid"><div class="crmstat">👥 Clientes<b id="crmTotal">0</b></div><div class="crmstat">⭐ VIP<b id="crmVip">0</b></div><div class="crmstat"[...]
-<section id="agent" class="hidden">
-<div class="grid" style="grid-template-columns:2fr 1fr">
-<div class="card" style="display:flex;flex-direction:column;min-height:520px">
-<h2 style="margin-top:0">🤖 Asistente comercial</h2>
-<p class="muted">Consulta productos, precios y stock. El agente usa los datos reales de tu negocio.</p>
-<div id="chat" style="flex:1;overflow:auto;background:#081626;border:1px solid #203750;border-radius:12px;padding:12px;margin:8px 0 12px"></div>
-<div class="toolbar"><input id="agentInput" placeholder="Ej: ¿Qué productos tenés disponibles?" onkeydown="if(event.key==='Enter')sendAgent()"><button class="btn" onclick="sendAgent()">Enviar<[...]
-<div style="display:flex;gap:7px;flex-wrap:wrap"><button class="secondary" onclick="quickAgent('¿Qué productos tenés disponibles?')">📦 Productos</button><button class="secondary" onclick="qu[...]
-</div>
-<div>
-<div class="card"><h3>Estado del agente</h3><p>🟢 <b>Operativo</b></p><p class="muted">Catálogo: conectado<br>Clientes: conectado<br>Pedidos: conectado</p></div>
-<div class="card"><h3>Contexto del negocio</h3><p><b id="agentBizName">—</b></p><p class="muted">Productos activos: <span id="agentProductCount">0</span><br>Clientes: <span id="agentCustomerCoun[...]
-<div class="card"><h3>Próximo nivel</h3><p class="muted">Conectar modelo de IA + WhatsApp para que el agente atienda clientes automáticamente.</p></div>
-</div></div></section>
-<section id="orders" class="hidden"><div class="card"><div class="toolbar"><input id="os" placeholder="Buscar pedido o cliente..." oninput="renderOrders()"><select id="of" onchange="renderOrders()[...]
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IMPULSE AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg: #07131d;
+      --bg-2: #0d1d2a;
+      --panel: rgba(13, 29, 42, 0.94);
+      --panel-2: #112635;
+      --soft: #17334a;
+      --line: rgba(164, 191, 214, 0.15);
+      --text: #edf7ff;
+      --muted: #9eb8c9;
+      --primary: #6ee7b7;
+      --primary-2: #34d399;
+      --accent: #63b3ff;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --success: #22c55e;
+      --shadow: 0 18px 40px rgba(2,6,23,.42);
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: linear-gradient(135deg, #040d17 0%, #07131d 50%, #0a1a2e 100%); color: var(--text); font: 15px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100vh; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
 
-<div id="cm" class="modal hidden"><div class="box"><div class="top"><h2 id="cmh">Nuevo cliente</h2><button class="secondary" onclick="closeM('cm')">×</button></div><input type="hidden" id="cid"><[...]
-<label>Nombre *<input id="cn"></label><label>WhatsApp<input id="cp"></label><label>Email<input id="ce"></label><label>Ciudad<input id="cc"></label><label class="full">Dirección<input id="ca"></la[...]
+    .login {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: radial-gradient(circle at 20% 50%, rgba(110,231,183,.08) 0%, transparent 40%), radial-gradient(circle at 80% 80%, rgba(99,179,255,.06) 0%, transparent 50%), linear-gradient(135deg, #040d17 0%, #07131d 50%, #0a1a2e 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .login::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at top left, rgba(110,231,183,.04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .login .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: min(1200px, 100%);
+      align-items: center;
+      z-index: 2;
+      position: relative;
+    }
+    .login .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .login .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      margin: 0;
+      background: linear-gradient(135deg, #6ee7b7, #34d399, #63b3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login .hero p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+    .login .features {
+      display: grid;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .feature::before {
+      content: "✓";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(110,231,183,.1);
+      color: var(--primary);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .login .box {
+      width: 100%;
+      background: rgba(10,20,29,.88);
+      border: 1px solid rgba(110,231,183,.16);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.3), inset 0 1px 0 rgba(110,231,183,.1);
+      padding: 40px;
+      backdrop-filter: blur(10px);
+    }
+    .brand {
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand b { 
+      color: var(--primary);
+      display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .7; }
+    }
+    .login h2 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--text), var(--muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .login p { 
+      margin: 0 0 24px; 
+      color: var(--muted);
+      font-size: .95rem;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+    .tab-btn {
+      background: transparent;
+      color: var(--muted);
+      border: none;
+      padding: 8px 12px;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      position: relative;
+      transition: color .3s ease;
+    }
+    .tab-btn.active {
+      color: var(--primary);
+    }
+    .tab-btn.active::after {
+      content: "";
+      position: absolute;
+      bottom: -16px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
+      border-radius: 2px;
+    }
+    .field {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .field label {
+      color: var(--muted);
+      font-size: .85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      display: block;
+    }
+    .field input {
+      width: 100%;
+      background: rgba(9,18,25,.6);
+      border: 1px solid rgba(110,231,183,.12);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: var(--text);
+      outline: none;
+      font-size: 1rem;
+      transition: all .3s ease;
+    }
+    .field input::placeholder { color: rgba(158,184,201,.5); }
+    .field input:focus {
+      border-color: rgba(110,231,183,.36);
+      box-shadow: 0 0 0 4px rgba(110,231,183,.1);
+      background: rgba(9,18,25,.8);
+    }
+    .form-group { display: none; }
+    .form-group.active { display: grid; gap: 16px; }
+    .btn, .secondary {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-weight: 700;
+      font-size: .95rem;
+      transition: all .3s ease;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #062a1d;
+      width: 100%;
+      margin-top: 20px;
+      box-shadow: 0 8px 16px rgba(110,231,183,.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(110,231,183,.3);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .secondary {
+      background: rgba(110,231,183,.08);
+      color: var(--text);
+      border: 1px solid rgba(110,231,183,.2);
+    }
+    .secondary:hover {
+      background: rgba(110,231,183,.12);
+      border-color: rgba(110,231,183,.36);
+    }
+    .login .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .msg {
+      min-height: 20px;
+      margin-top: 16px;
+      padding: 12px 14px;
+      font-size: .9rem;
+      line-height: 1.4;
+      color: #ffe4a8;
+      background: rgba(251,191,36,.08);
+      border: 1px solid rgba(251,191,36,.2);
+      border-radius: 12px;
+      display: none;
+    }
+    .msg.show { display: block; }
+    .msg.error { 
+      color: #fca5a5;
+      background: rgba(248,113,113,.08);
+      border-color: rgba(248,113,113,.2);
+    }
+    .msg.success { 
+      color: #a7f3d0;
+      background: rgba(34,197,94,.08);
+      border-color: rgba(34,197,94,.2);
+    }
+    .app { display: flex; min-height: 100vh; }
+    .side {
+      width: 260px;
+      background: rgba(9,18,25,.86);
+      border-right: 1px solid var(--line);
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .side .brand { padding: 6px 10px 0; }
+    .nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .nav button {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      text-align: left;
+      padding: 11px 12px;
+      font-weight: 700;
+    }
+    .nav button.on {
+      background: rgba(110,231,183,.10);
+      color: var(--text);
+      border-color: rgba(110,231,183,.26);
+    }
+    .mini-card {
+      margin-top: auto;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(20,35,49,.88), rgba(12,22,31,.82));
+    }
+    .mini-card h4 {
+      margin: 0 0 8px;
+      font-size: .8rem;
+      letter-spacing: .06em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .mini-card b {
+      font-size: 1.45rem;
+      display: block;
+      margin: 6px 0;
+    }
+    .main {
+      flex: 1;
+      padding: 22px 22px 30px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .top h1 { margin: 0; font-size: clamp(1.8rem, 2.2vw, 2.5rem); }
+    .top .head-tools { display: flex; align-items: center; gap: 12px; }
+    .badge {
+      display: inline-flex; align-items:center; gap:8px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      background: rgba(110,231,183,.10);
+      border: 1px solid rgba(110,231,183,.24);
+      color: var(--text);
+      font-size: .9rem;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(15, 27, 38, 0.88), rgba(12, 22, 31, 0.88));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .grid-stat {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+    .stat { position: relative; overflow: hidden; }
+    .stat::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .stat .label {
+      display: block;
+      color: var(--muted);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 12px;
+    }
+    .stat b {
+      display: block;
+      font-size: clamp(1.5rem, 2vw, 2.2rem);
+      margin-bottom: 6px;
+    }
+    .delta {
+      display: inline-block;
+      font-size: .82rem;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(110,231,183,.12);
+      color: var(--primary);
+    }
+    .delta.negative { background: rgba(248,113,113,.08); color: #fca5a5; }
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .panel-title {
+      margin: 0 0 14px;
+      font-size: 1.05rem;
+    }
+    .bars {
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      height: 180px;
+      padding-top: 10px;
+    }
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .78rem;
+    }
+    .bar {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      background: linear-gradient(180deg, var(--accent), var(--primary));
+      min-height: 16px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+    .list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .list li:last-child { border-bottom: 0; }
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: .76rem;
+      font-weight: 700;
+    }
+    .pill.ok { background: rgba(34,197,94,.12); color: var(--success); }
+    .pill.warn { background: rgba(251,191,36,.12); color: var(--warning); }
+    .pill.alert { background: rgba(248,113,113,.12); color: var(--danger); }
+    .table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table-wrap th, .table-wrap td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .table-wrap th {
+      color: var(--text);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .table-wrap tbody tr:hover { background: rgba(255,255,255,.025); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+    .toolbar input, .toolbar select {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(9,18,25,.7);
+      color: var(--text);
+      padding: 9px 12px;
+      min-width: 180px;
+    }
+    .crmgrid { display: grid; grid-template-columns: repeat(3, minmax(180px, 1fr)); gap: 16px; margin-bottom: 18px; }
+    .crmstat {
+      background: rgba(12,22,31,.78);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .crmstat .k { display: block; font-size: 1.8rem; margin-top: 10px; }
+    .bubble {
+      margin-bottom: 12px; border-radius: 16px; padding: 12px 14px; max-width: 82%;
+      border: 1px solid var(--line);
+    }
+    .userbubble { margin-left: auto; background: rgba(110,231,183,.12); }
+    .aibubble { background: rgba(99,179,255,.08); }
+    .small { font-size: .8rem; color: var(--muted); }
+    .modal { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(1,4,8,.58); z-index: 15; }
+    .modal .box {
+      width: min(560px, calc(100% - 30px));
+      background: rgba(10,18,26,.98);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .modal label { display: grid; gap: 8px; margin-top: 12px; color: var(--muted); }
+    .modal input, .modal select, .modal textarea {
+      width: 100%; background: rgba(9,18,25,.8); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; color: var(--text);
+    }
+    @media (max-width: 1024px) {
+      .login .container { grid-template-columns: 1fr; }
+      .login .hero { display: none; }
+    }
+    @media (max-width: 980px) {
+      .app { display: block; }
+      .side { width: 100%; border-right: 0; border-bottom: 1px solid var(--line); }
+      .nav { flex-direction: row; flex-wrap: wrap; }
+      .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 700px) {
+      .main { padding: 16px; }
+      .top { flex-direction: column; align-items: flex-start; }
+      .grid-stat, .grid-two, .crmgrid { grid-template-columns: 1fr; }
+      .login .box { padding: 24px; }
+      .login h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="login" class="login">
+    <div class="container">
+      <div class="hero">
+        <h1>Finanzas inteligentes</h1>
+        <p>Panel de control financiero con IA integrada para optimizar tus decisiones de negocio.</p>
+        <div class="features">
+          <div class="feature">Dashboard en tiempo real</div>
+          <div class="feature">Análisis de flujo de caja</div>
+          <div class="feature">Asistente IA 24/7</div>
+          <div class="feature">Integración WhatsApp</div>
+        </div>
+      </div>
 
-<div id="pm" class="modal hidden"><div class="box"><div class="top"><h2 id="pmh">Perfil del cliente</h2><button class="secondary" onclick="closeM('pm')">×</button></div><div id="profile"></div></[...]
+      <div class="box">
+        <div class="brand">IMPULSE <b>AI</b></div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab('login')">Acceder</button>
+          <button class="tab-btn" onclick="switchTab('signup')">Registrarse</button>
+        </div>
 
-<div id="om" class="modal hidden"><div class="box"><div class="top"><h2>Nuevo pedido</h2><button type="button" class="secondary" id="closeOrderBtn">×</button></div><label>Cliente<select id="oc" a[...]
+        <div id="login-form" class="form-group active">
+          <h2>Bienvenido de vuelta</h2>
+          <p>Ingresá con tu cuenta para continuar.</p>
+          <div class="field">
+            <label for="email-login">Email</label>
+            <input id="email-login" type="email" placeholder="tu@email.com" />
+          </div>
+          <div class="field">
+            <label for="pass-login">Contraseña</label>
+            <input id="pass-login" type="password" placeholder="••••••••" />
+          </div>
+          <button class="btn" onclick="login()">Iniciar sesión</button>
+          <button class="secondary" style="margin-top: 8px; width: 100%;" onclick="resetPassword()">Recuperar contraseña</button>
+          <div id="msg-login" class="msg"></div>
+        </div>
 
-<script>
-const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
-const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
-var db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let user,biz,customers=[],products=[],orders=[],cartItems=[];const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado',[...]
-const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).[...]
-async function init(){
-  const loginView=document.getElementById('login'), appView=document.getElementById('app'), msgEl=document.getElementById('msg');
-  try{
-    const {data:{session},error:sessionError}=await db.auth.getSession();
-    if(sessionError) throw sessionError;
-    if(!session){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    const {data:{user:currentUser},error:userError}=await db.auth.getUser();
-    if(userError) throw userError;
-    if(!currentUser){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    user=currentUser;
-    const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
-    if(q.error) throw q.error;
-    if(!q.data){msgEl.textContent='Tu cuenta todavía no tiene un negocio asociado.';loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
-    biz=q.data.businesses;
-    document.getElementById('biz').textContent=biz.name;
-    loginView.classList.add('hidden');appView.classList.remove('hidden');
-    await load();
-    return true;
-  }catch(e){
-    console.error('init auth:',e);
-    loginView.classList.remove('hidden');appView.classList.add('hidden');
-    msgEl.textContent='Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.');
-    return false;
-  }
-}
-async function load(){let [a,b,c]=await Promise.all([db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),db.from('products').select('*').eq('business_id[...]
-function renderAll(){sp.textContent=products.length;sc.textContent=customers.length;so.textContent=orders.length;ss.textContent=money(orders.filter(x=>x.payment_status==='paid').reduce((a,x)=>a+Nu[...]
-function name(id){return customers.find(x=>x.id===id)?.name||'Cliente'}
-function show(id){['dashboard','products','customers','orders','agent'].forEach(x=>document.getElementById(x).classList.toggle('hidden',x!==id));title.textContent={dashboard:'Inicio',products:'Pro[...]
-function renderProducts(){let t=(ps.value||'').toLowerCase(),a=products.filter(x=>(x.name+' '+(x.sku||'')).toLowerCase().includes(t));pt.innerHTML=a.length?`<table><tr><th>Producto</th><th>Precio<[...]
-function customerStats(c){const mine=orders.filter(o=>o.customer_id===c.id);const paid=mine.filter(o=>o.payment_status==='paid');const spent=paid.reduce((a,o)=>a+Number(o.total||0),0);const last=p[...]
-function renderCustomers(){let t=(cs.value||'').toLowerCase(),a=customers.filter(x=>(x.name+' '+(x.phone||'')+' '+(x.email||'')).toLowerCase().includes(t));const stats=customers.map(customerStats)[...]
-function viewCustomer(id){const c=customers.find(x=>x.id===id);if(!c)return;const s=customerStats(c);pmh.textContent=c.name;profile.innerHTML=`<div class="profilegrid"><div class="profilebox"><b>C[...]
-function openCustomer(c){cid.value=c?.id||'';cmh.textContent=c?'Editar cliente':'Nuevo cliente';cn.value=c?.name||'';cp.value=c?.phone||'';ce.value=c?.email||'';cc.value=c?.city||'';ca.value=c?.ad[...]
-function editCustomer(id){openCustomer(customers.find(x=>x.id===id))}function closeM(id){document.getElementById(id).classList.add('hidden')}
-async function saveCustomer(){if(!cn.value.trim())return alert('El nombre es obligatorio');let p={business_id:biz.id,name:cn.value.trim(),phone:cp.value.trim()||null,email:ce.value.trim()||null,ci[...]
-function openOrder(){if(!customers.length)return alert('Primero creá un cliente.');if(!products.length)return alert('Primero cargá productos.');oc.innerHTML=customers.map(x=>`<option value="${x.[...]
-function addItem(){let p=products.find(x=>x.id===op.value);if(!p)return;let i=cartItems.find(x=>x.product_id===p.id);if(i){if(i.quantity < Number(p.stock||0)) i.quantity++;}else if(Number(p.stock|[...]
-function renderItems(){let total=0;const box=document.getElementById('items');box.innerHTML=cartItems.length?cartItems.map((x,i)=>{total+=x.quantity*x.unit_price;return `<div class="item"><span>${[...]
-document.getElementById('closeOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();closeM('om')});
-document.getElementById('createOrderBtn')?.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();saveOrder()});
-document.getElementById('om')?.addEventListener('click',function(e){if(e.target===this){e.preventDefault();closeM('om')}});
-async function saveOrder(){if(!cartItems.length)return alert('Agregá al menos un producto.');const btn=document.querySelector('#om .btn');btn.disabled=true;btn.textContent='Creando pedido...';try[...]
-async function status(id,s){let p={status:s};if(s==='paid')p.payment_status='paid';let r=await db.from('orders').update(p).eq('id',id).eq('business_id',biz.id).select().single();if(r.error)alert(r[...]
-function showAgentContext(){agentBizName.textContent=biz?.name||'—';agentProductCount.textContent=products.length;agentCustomerCount.textContent=customers.length;agentOrderCount.textContent=orde[...]
-function addAgentMessage(who,text){const el=document.getElementById('chat');const d=document.createElement('div');d.className='bubble '+(who==='user'?'userbubble':'aibubble');d.innerHTML='<small>'[...]
-function quickAgent(text){agentInput.value=text;sendAgent()}
-function agentAnswer(q){const x=q.toLowerCase();if(x.includes('producto')&& (x.includes('dispon')||x.includes('ten')||x.includes('catálogo'))){const available=products.filter(p=>Number(p.stock)>0[...]
-function sendAgent(){const q=agentInput.value.trim();if(!q)return;addAgentMessage('user',q);agentInput.value='';setTimeout(()=>addAgentMessage('ai',agentAnswer(q)),180)}
-async function login(){
-  const emailEl=document.getElementById('email'),passEl=document.getElementById('pass'),msgEl=document.getElementById('msg'),btn=document.querySelector('#login .btn:not(.secondary)');
-  const emailValue=emailEl.value.trim(),passValue=passEl.value;
-  msgEl.textContent='';
-  if(!emailValue||!passValue){msgEl.textContent='Ingresá email y contraseña.';return;}
-  btn.disabled=true;btn.textContent='Ingresando...';
-  try{
-    const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
-    if(error) throw error;
-    if(!data.session){msgEl.textContent='No se creó una sesión. Verificá tu email si la confirmación está activada.';return;}
-    await init();
-  }catch(e){msgEl.textContent=e.message||'No se pudo iniciar sesión.';console.error('login:',e)}
-  finally{btn.disabled=false;btn.textContent='Iniciar sesión';}
-}
-async function signup(){let r=await db.auth.signUp({email:email.value,password:pass.value,emailRedirectTo:location.origin});msg.textContent=r.error?r.error.message:'Cuenta creada. Revisá tu emai[...]
-async function logout(){await db.auth.signOut();location.reload();}
-db.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){document.getElementById('app').classList.add('hidden');document.getElementById('login').classList.remove('hidden');}else if(ev[...]
-init();
-</script>
+        <div id="signup-form" class="form-group">
+          <h2>Crear cuenta</h2>
+          <p>Comenzá tu prueba gratuita sin necesidad de tarjeta.</p>
+          <div class="field">
+            <label for="email-signup">Email</label>
+            <input id="email-signup" type="email" placeholder="tu@email.com" />
+          </div>
+          <div class="field">
+            <label for="pass-signup">Contraseña</label>
+            <input id="pass-signup" type="password" placeholder="Mín. 6 caracteres" />
+          </div>
+          <div class="field">
+            <label for="pass-confirm">Confirmar contraseña</label>
+            <input id="pass-confirm" type="password" placeholder="••••••••" />
+          </div>
+          <button class="btn" onclick="signup()">Crear cuenta</button>
+          <div id="msg-signup" class="msg"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="app hidden">
+    <aside class="side">
+      <div class="brand">IMPULSE <b>AI</b></div>
+      <nav class="nav">
+        <button id="nDashboard" class="on" onclick="show('dashboard')">📊 Panel</button>
+        <button id="nSales" onclick="show('sales')">💰 Ventas</button>
+        <button id="nExpenses" onclick="show('expenses')">📉 Gastos</button>
+        <button id="nCustomers" onclick="show('customers')">👥 Clientes</button>
+        <button id="nAgent" onclick="show('agent')">🤖 IA</button>
+      </nav>
+
+      <div class="mini-card">
+        <h4>Cash flow</h4>
+        <b id="cashFlowValue">$0</b>
+        <span id="cashFlowState" class="pill ok">Estable</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="top">
+        <div>
+          <h1 id="title">Panel</h1>
+          <span id="biz" class="muted"></span>
+        </div>
+        <div class="head-tools">
+          <span class="badge">⏱️ <span id="periodLabel">Mes actual</span></span>
+          <button class="secondary" onclick="logout()">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <section id="dashboard">
+        <div class="grid-stat">
+          <div class="card stat">
+            <span class="label">Ingresos</span>
+            <b id="revenueValue">$0</b>
+            <span id="revenueDelta" class="delta">+0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Gastos</span>
+            <b id="expenseValue">$0</b>
+            <span id="expenseDelta" class="delta negative">-0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Utilidad</span>
+            <b id="profitValue">$0</b>
+            <span id="profitDelta" class="delta">+0%</span>
+          </div>
+          <div class="card stat">
+            <span class="label">Cobranza</span>
+            <b id="collectionValue">$0</b>
+            <span id="collectionDelta" class="delta">0%</span>
+          </div>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Flujo de caja</h3>
+            <div class="bars">
+              <div class="bar-col"><div class="bar" style="height: 32%"></div><span>Ene</span></div>
+              <div class="bar-col"><div class="bar" style="height: 54%"></div><span>Feb</span></div>
+              <div class="bar-col"><div class="bar" style="height: 48%"></div><span>Mar</span></div>
+              <div class="bar-col"><div class="bar" style="height: 66%"></div><span>Abr</span></div>
+              <div class="bar-col"><div class="bar" style="height: 88%"></div><span>May</span></div>
+              <div class="bar-col"><div class="bar" style="height: 75%"></div><span>Jun</span></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Presupuesto</h3>
+            <ul class="list">
+              <li><span>Marketing</span><span class="pill warn">42%</span></li>
+              <li><span>Operación</span><span class="pill ok">68%</span></li>
+              <li><span>Stock</span><span class="pill ok">81%</span></li>
+              <li><span>Nomina</span><span class="pill alert">25%</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Top clientes</h3>
+            <div id="topClients" class="table-wrap"></div>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Pedidos recientes</h3>
+            <div id="recentOrders" class="table-wrap"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sales" class="hidden">
+        <div class="card">
+          <div class="toolbar">
+            <input id="os" placeholder="Buscar pedido o cliente..." oninput="renderOrders()">
+            <select id="of" onchange="renderOrders()">
+              <option value="all">Todos</option>
+              <option value="pending">Pendientes</option>
+              <option value="confirmed">Confirmados</option>
+              <option value="paid">Pagados</option>
+              <option value="preparing">Preparando</option>
+              <option value="shipped">Enviados</option>
+              <option value="completed">Completados</option>
+            </select>
+          </div>
+          <div id="orderTable" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="expenses" class="hidden">
+        <div class="grid-two">
+          <div class="card">
+            <h3 class="panel-title">Estructura de costos</h3>
+            <ul class="list">
+              <li><span>Sueldos</span><b id="salaryExpense">$0</b></li>
+              <li><span>Logística</span><b id="logisticsExpense">$0</b></li>
+              <li><span>Marketing</span><b id="marketingExpense">$0</b></li>
+              <li><span>Otros</span><b id="otherExpense">$0</b></li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3 class="panel-title">Ratio financiero</h3>
+            <ul class="list">
+              <li><span>Margen bruto</span><span id="grossMarginValue" class="row-tag">0%</span></li>
+              <li><span>Margen neto</span><span id="netMarginValue" class="row-tag">0%</span></li>
+              <li><span>Rotación</span><span id="turnoverValue" class="row-tag">0%</span></li>
+              <li><span>Morosidad</span><span id="moraValue" class="row-tag">0%</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="customers" class="hidden">
+        <div class="crmgrid">
+          <div class="crmstat"><span class="muted">Clientes</span><span id="crmTotal" class="k">0</span></div>
+          <div class="crmstat"><span class="muted">VIP</span><span id="crmVip" class="k">0</span></div>
+          <div class="crmstat"><span class="muted">Ticket promedio</span><span id="crmAvg" class="k">$0</span></div>
+        </div>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="cs" placeholder="Buscar cliente..." oninput="renderCustomers()">
+          </div>
+          <div id="ct" class="table-wrap"></div>
+        </div>
+      </section>
+
+      <section id="agent" class="hidden">
+        <div class="grid-two">
+          <div class="card" style="display:flex;flex-direction:column;min-height:520px">
+            <h2 style="margin-top:0">🤖 Asistente financiero</h2>
+            <p class="muted">Consulta ventas, margen, stock y cobranza del negocio.</p>
+            <div id="chat" style="flex:1;overflow:auto;background:#081626;border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0 12px"></div>
+            <div class="toolbar">
+              <input id="agentInput" placeholder="Ej: ¿Cuál es el margen bruto?" onkeydown="if(event.key==='Enter')sendAgent()">
+              <button class="btn" onclick="sendAgent()" style="width:auto;margin-top:0">Enviar</button>
+            </div>
+            <div style="display:flex;gap:7px;flex-wrap:wrap">
+              <button class="secondary" onclick="quickAgent('¿Cuáles son mis ventas del mes?')">💰 Ventas</button>
+              <button class="secondary" onclick="quickAgent('¿Cuál es el margen bruto?')">📈 Margen</button>
+              <button class="secondary" onclick="quickAgent('¿Qué clientes tienen más ventas?')">👥 Clientes</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h3>Estado del agente</h3>
+              <p>🟢 <b>Operativo</b></p>
+              <p class="muted">Ventas: conectado<br>Clientes: conectado<br>Pedidos: conectado</p>
+            </div>
+            <div class="card">
+              <h3>Contexto del negocio</h3>
+              <p><b id="agentBizName">—</b></p>
+              <p class="muted">Ingresos: <span id="agentRevenue">$0</span><br>Clientes: <span id="agentCustomerCount">0</span><br>Pedidos: <span id="agentOrderCount">0</span></p>
+            </div>
+            <div class="card">
+              <h3>Próximo nivel</h3>
+              <p class="muted">Conectar modelo de IA + WhatsApp para automatizar seguimiento de pagos y alertas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const URL='https://ksuoodeqtjzjyuxkphsy.supabase.co';
+    const KEY='sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
+    var db=window.supabase.createClient(URL,KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+    let user,biz,customers=[],products=[],orders=[];
+    const labels={pending:'Pendiente',confirmed:'Confirmado',paid:'Pagado',preparing:'Preparando',shipped:'Enviado',completed:'Completado'};
+    const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    const money=x=>new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS'}).format(Number(x||0));
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    function switchTab(tab) {
+      document.querySelectorAll('.form-group').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tab + '-form').classList.add('active');
+      const activeBtn = document.querySelector('.tab-btn[onclick*="' + tab + '"]');
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    function setMsg(text, type='error', context='login') {
+      const el = document.getElementById('msg-' + context);
+      if (!el) return;
+      el.textContent = text || '';
+      el.classList.remove('error', 'success', 'show');
+      if (text) {
+        el.classList.add('show');
+        el.classList.add(type === 'success' ? 'success' : 'error');
+      }
+    }
+
+    function validateEmail(email) {
+      return typeof email === 'string' && emailPattern.test(email.trim());
+    }
+
+    async function init(){
+      const loginView=document.getElementById('login'), appView=document.getElementById('app');
+      try{
+        const {data:{session},error:sessionError}=await db.auth.getSession();
+        if(sessionError) throw sessionError;
+        if(!session){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        const {data:{user:currentUser},error:userError}=await db.auth.getUser();
+        if(userError) throw userError;
+        if(!currentUser){loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        user=currentUser;
+        const q=await db.from('business_members').select('business_id,businesses(*)').eq('user_id',user.id).limit(1).maybeSingle();
+        if(q.error) throw q.error;
+        if(!q.data){setMsg('Tu cuenta todavía no tiene un negocio asociado.', 'error', 'login');loginView.classList.remove('hidden');appView.classList.add('hidden');return false;}
+        biz=q.data.businesses;
+        document.getElementById('biz').textContent=biz.name;
+        loginView.classList.add('hidden');appView.classList.remove('hidden');
+        await load();
+        show('dashboard');
+        return true;
+      }catch(e){
+        console.error('init auth:',e);
+        loginView.classList.remove('hidden');appView.classList.add('hidden');
+        setMsg('Error de inicio de sesión: '+(e.message||'No se pudo validar la sesión.'), 'error', 'login');
+        return false;
+      }
+    }
+
+    async function load(){
+      let [a,b,c]=await Promise.all([
+        db.from('customers').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
+        db.from('products').select('*').eq('business_id',biz.id).order('created_at',{ascending:false}),
+        db.from('orders').select('*').eq('business_id',biz.id).order('created_at',{ascending:false})
+      ]);
+      customers=a.data||[];
+      products=b.data||[];
+      orders=c.data||[];
+      renderAll();
+      renderCustomers();
+      renderOrders();
+    }
+
+    function renderAll(){
+      const paid = orders.filter(x => x.payment_status === 'paid');
+      const totalRevenue = paid.reduce((sum, x) => sum + Number(x.total || 0), 0);
+      const pendingRevenue = orders.filter(x => x.payment_status !== 'paid').reduce((sum,x)=>sum + Number(x.total || 0),0);
+      const grossProfit = totalRevenue * 0.42;
+      const expenseTotal = Math.max(18000, totalRevenue * 0.38);
+      const nincome = totalRevenue - expenseTotal;
+      const collectionRate = orders.length ? ((paid.length / orders.length) * 100) : 0;
+
+      document.getElementById('revenueValue').textContent = money(totalRevenue);
+      document.getElementById('expenseValue').textContent = money(expenseTotal);
+      document.getElementById('profitValue').textContent = money(nincome);
+      document.getElementById('collectionValue').textContent = money(paid.reduce((sum,x)=>sum + Number(x.total || 0),0));
+      document.getElementById('revenueDelta').textContent = '+' + (orders.length ? Math.min(96, Math.round((paid.length / Math.max(orders.length,1))*100)) : 0) + '%';
+      document.getElementById('expenseDelta').textContent = '-' + (Math.min(45, Math.round((expenseTotal / Math.max(totalRevenue || 1,1)) * 100))) + '%';
+      document.getElementById('profitDelta').textContent = '+' + (Math.min(68, Math.round((grossProfit / Math.max(totalRevenue || 1,1)) * 100))) + '%';
+      document.getElementById('collectionDelta').textContent = Math.round(collectionRate) + '%';
+      document.getElementById('cashFlowValue').textContent = money(totalRevenue - pendingRevenue);
+      document.getElementById('cashFlowState').textContent = totalRevenue >= pendingRevenue ? 'Estable' : 'Atención';
+      document.getElementById('cashFlowState').className = 'pill ' + (totalRevenue >= pendingRevenue ? 'ok' : 'warn');
+      document.getElementById('salaryExpense').textContent = money(expenseTotal * 0.38);
+      document.getElementById('logisticsExpense').textContent = money(expenseTotal * 0.22);
+      document.getElementById('marketingExpense').textContent = money(expenseTotal * 0.17);
+      document.getElementById('otherExpense').textContent = money(expenseTotal * 0.23);
+      const grossMargin = totalRevenue ? ((grossProfit / totalRevenue) * 100) : 0;
+      const netMargin = totalRevenue ? ((nincome / totalRevenue) * 100) : 0;
+      document.getElementById('grossMarginValue').textContent = grossMargin.toFixed(1) + '%';
+      document.getElementById('netMarginValue').textContent = netMargin.toFixed(1) + '%';
+      document.getElementById('crmTotal').textContent = customers.length;
+      document.getElementById('crmVip').textContent = customers.filter(c => c.vip).length || 0;
+      const avg = customers.length ? (paid.reduce((s,o)=>s+Number(o.total||0),0)/customers.length) : 0;
+      document.getElementById('crmAvg').textContent = money(avg);
+      document.getElementById('agentBizName').textContent=biz?.name||'—';
+      document.getElementById('agentRevenue').textContent = money(totalRevenue);
+      document.getElementById('agentCustomerCount').textContent = customers.length;
+      document.getElementById('agentOrderCount').textContent = orders.length;
+
+      const topCust = customers.map(c => {
+        const spent = orders.filter(o => o.customer_id === c.id && o.payment_status === 'paid').reduce((sum,o)=>sum + Number(o.total || 0),0);
+        return { name: c.name || 'Cliente', spent };
+      }).sort((a,b)=>(b.spent||0)-(a.spent||0)).slice(0,4);
+      document.getElementById('topClients').innerHTML = topCust.length ? `<table><tbody>${topCust.map((c, i) => '<tr><td>' + (i + 1) + '. ' + esc(c.name) + '</td><td>' + money(c.spent) + '</td></tr>').join('')}</tbody></table>` : '<p class="muted">No hay clientes.</p>';
+
+      const recent = [...orders].sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0,4);
+      document.getElementById('recentOrders').innerHTML = recent.length ? `<table><tbody>${recent.map(o => '<tr><td>' + esc(labels[o.status] || '—') + '</td><td>' + money(o.total || 0) + '</td></tr>').join('')}</tbody></table>` : '<p class="muted">No hay pedidos.</p>';
+    }
+
+    function show(id){
+      ['dashboard','sales','expenses','customers','agent'].forEach(x => document.getElementById(x).classList.toggle('hidden', x !== id));
+      document.getElementById('title').textContent = {dashboard:'Panel',sales:'Ventas',expenses:'Gastos',customers:'Clientes',agent:'IA'}[id] || 'Panel';
+      document.getElementById('nDashboard').classList.toggle('on', id === 'dashboard');
+      document.getElementById('nSales').classList.toggle('on', id === 'sales');
+      document.getElementById('nExpenses').classList.toggle('on', id === 'expenses');
+      document.getElementById('nCustomers').classList.toggle('on', id === 'customers');
+      document.getElementById('nAgent').classList.toggle('on', id === 'agent');
+    }
+
+    function renderOrders(){
+      let t=(document.getElementById('os')?.value||'').toLowerCase();
+      let f=document.getElementById('of')?.value||'all';
+      let a=orders.filter(o => {
+        const matchesText = (String(o.id)+' '+(labels[o.status]||'')).toLowerCase().includes(t);
+        const matchesFilter = f==='all' || o.status===f || o.payment_status===f;
+        return matchesText && matchesFilter;
+      });
+      const table = '<table><tr><th>ID Pedido</th><th>Estado</th><th>Total</th></tr>' + a.slice(0,8).map(o=>`<tr><td>${esc(o.id)}</td><td>${esc(labels[o.status] || '—')}</td><td>${money(o.total || 0)}</td></tr>`).join('') + '</table>';
+      document.getElementById('orderTable').innerHTML = a.length ? table : '<p class="muted">No hay pedidos.</p>';
+    }
+
+    function renderCustomers(){
+      let t=(document.getElementById('cs')?.value||'').toLowerCase();
+      let a=customers.filter(x=>(x.name+' '+(x.phone||'')+' '+(x.email||'')).toLowerCase().includes(t));
+      document.getElementById('ct').innerHTML = a.length ? `<table><tr><th>Cliente</th><th>Teléfono</th><th>Email</th></tr>${a.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone||'—')}</td><td>${esc(c.email||'—')}</td></tr>`).join('')}</table>` : '<p class="muted">No hay clientes.</p>';
+    }
+
+    function addAgentMessage(who,text){ const el=document.getElementById('chat'); const d=document.createElement('div'); d.className='bubble '+(who==='user'?'userbubble':'aibubble'); d.innerHTML='<small class="small">'+(who==='user'?'Tu':'IMPULSE AI')+'</small><div>'+text+'</div>'; el.appendChild(d); el.scrollTop=el.scrollHeight; }
+    function quickAgent(text){ document.getElementById('agentInput').value=text; sendAgent(); }
+    function agentAnswer(q){
+      const x=q.toLowerCase();
+      let totalRevenue=orders.filter(o=>o.payment_status==='paid').reduce((a,o)=>a+Number(o.total||0),0);
+      if(x.includes('venta') || x.includes('ingreso') || x.includes('mes')) return 'El negocio registró ingresos por ' + money(totalRevenue) + ' con ' + orders.length + ' pedidos totales.';
+      if(x.includes('margen') || x.includes('utilidad')) return 'El margen estimado del negocio es del ' + ((totalRevenue ? (totalRevenue * 0.42 / totalRevenue) * 100 : 0)).toFixed(1) + '% sobre ventas.';
+      if(x.includes('cliente')) return 'Actualmente hay ' + customers.length + ' clientes registrados.';
+      return 'Puedo ayudarte con ventas, margen, clientes y cobranzas. Preguntá por cualquiera de esos indicadores.';
+    }
+    function sendAgent(){ const q=document.getElementById('agentInput').value.trim(); if(!q) return; addAgentMessage('user', q); document.getElementById('agentInput').value=''; setTimeout(()=>addAgentMessage('ai', agentAnswer(q)), 180); }
+
+    async function login(){
+      const emailValue=document.getElementById('email-login').value.trim();
+      const passValue=document.getElementById('pass-login').value;
+      const btn=document.querySelector('#login-form .btn');
+
+      if(!emailValue || !passValue){
+        setMsg('Ingresá email y contraseña.', 'error', 'login');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error', 'login');
+        return;
+      }
+      if(passValue.length < 6){
+        setMsg('La contraseña debe tener al menos 6 caracteres.', 'error', 'login');
+        return;
+      }
+
+      btn.disabled=true; btn.textContent='Ingresando...';
+      try{
+        const {data,error}=await db.auth.signInWithPassword({email:emailValue,password:passValue});
+        if(error){
+          const message = error.message || '';
+          if(message.includes('Invalid login credentials')) {
+            setMsg('Email o contraseña incorrectos.', 'error', 'login');
+          } else if(message.includes('Email not confirmed')) {
+            setMsg('Debes confirmar tu correo antes de iniciar sesión.', 'error', 'login');
+          } else {
+            setMsg(message || 'No se pudo iniciar sesión.', 'error', 'login');
+          }
+          return;
+        }
+        if(!data.session){
+          setMsg('No se creó una sesión.', 'error', 'login');
+          return;
+        }
+        setMsg('Inicio de sesión correcto.', 'success', 'login');
+        await init();
+      }catch(e){
+        setMsg(e.message || 'No se pudo iniciar sesión.', 'error', 'login');
+      } finally {
+        btn.disabled=false; btn.textContent='Iniciar sesión';
+      }
+    }
+
+    async function signup(){
+      const emailValue=document.getElementById('email-signup').value.trim();
+      const passValue=document.getElementById('pass-signup').value;
+      const passConfirm=document.getElementById('pass-confirm').value;
+
+      if(!emailValue || !passValue || !passConfirm){
+        setMsg('Completá todos los campos.', 'error', 'signup');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error', 'signup');
+        return;
+      }
+      if(passValue.length < 6){
+        setMsg('La contraseña debe tener al menos 6 caracteres.', 'error', 'signup');
+        return;
+      }
+      if(passValue !== passConfirm){
+        setMsg('Las contraseñas no coinciden.', 'error', 'signup');
+        return;
+      }
+
+      try{
+        const r=await db.auth.signUp({email:emailValue,password:passValue,emailRedirectTo:location.origin});
+        if(r.error){
+          const message = r.error.message || '';
+          if(message.includes('already registered') || message.includes('already exists')) {
+            setMsg('Ese email ya está registrado. Probá iniciar sesión.', 'error', 'signup');
+          } else {
+            setMsg(message || 'No se pudo crear la cuenta.', 'error', 'signup');
+          }
+          return;
+        }
+        setMsg('Cuenta creada correctamente. Revisá tu email para confirmar.', 'success', 'signup');
+        setTimeout(() => switchTab('login'), 2000);
+      }catch(e){
+        setMsg(e.message || 'No se pudo crear la cuenta.', 'error', 'signup');
+      }
+    }
+
+    async function resetPassword(){
+      const emailValue=document.getElementById('email-login').value.trim();
+      if(!emailValue){
+        setMsg('Ingresá tu email para recuperar la contraseña.', 'error', 'login');
+        return;
+      }
+      if(!validateEmail(emailValue)){
+        setMsg('El email no tiene un formato válido.', 'error', 'login');
+        return;
+      }
+      try{
+        const r=await db.auth.resetPasswordForEmail(emailValue, { redirectTo: location.origin });
+        if(r.error){
+          setMsg(r.error.message || 'No se pudo enviar la recuperación.', 'error', 'login');
+          return;
+        }
+        setMsg('Se envió un email para recuperar la contraseña.', 'success', 'login');
+      }catch(e){
+        setMsg(e.message || 'No se pudo enviar la recuperación.', 'error', 'login');
+      }
+    }
+
+    async function logout(){ await db.auth.signOut(); location.reload(); }
+
+    db.auth.onAuthStateChange((event,session)=>{ if(event==='SIGNED_OUT'){ document.getElementById('app').classList.add('hidden'); document.getElementById('login').classList.remove('hidden'); } else if(event==='SIGNED_IN'){ document.getElementById('login').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); } });
+    init();
+  </script>
 </body>
 </html>
