@@ -12,7 +12,6 @@
       --bg-3: #101f2d;
       --panel: rgba(12, 22, 31, 0.76);
       --panel-strong: rgba(14, 26, 36, 0.92);
-      --glass: rgba(255,255,255,0.04);
       --line: rgba(160, 191, 214, 0.14);
       --text: #edf7ff;
       --muted: #9db7c9;
@@ -27,20 +26,17 @@
     }
 
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(110,231,183,0.12), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(99,179,255,0.12), transparent 30%),
-        linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top left, rgba(110,231,183,.12), transparent 28%),
+                  radial-gradient(circle at bottom right, rgba(99,179,255,.12), transparent 30%),
+                  linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
       color: var(--text);
     }
-
     body { min-height: 100vh; }
-    button, input, select, textarea { font: inherit; }
+    button, input, select { font: inherit; }
     button { cursor: pointer; }
     .hidden { display: none !important; }
 
@@ -52,386 +48,131 @@
       position: relative;
       overflow: hidden;
     }
-
-    .login::before,
-    .login::after {
+    .login::before, .login::after {
       content: "";
       position: absolute;
       border-radius: 50%;
       filter: blur(60px);
-      opacity: 0.25;
+      opacity: .25;
       pointer-events: none;
     }
-
     .login::before {
-      width: 420px;
-      height: 420px;
-      left: -130px;
-      top: 40px;
-      background: rgba(110,231,183,0.16);
+      width: 420px; height: 420px; left: -130px; top: 40px; background: rgba(110,231,183,.16);
     }
-
     .login::after {
-      width: 480px;
-      height: 480px;
-      right: -160px;
-      bottom: -80px;
-      background: rgba(99,179,255,0.14);
+      width: 480px; height: 480px; right: -160px; bottom: -80px; background: rgba(99,179,255,.14);
     }
-
     .login .container {
-      position: relative;
-      z-index: 1;
-      width: min(1180px, 100%);
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 42px;
-      align-items: center;
+      position: relative; z-index: 1; width: min(1180px, 100%);
+      display: grid; grid-template-columns: 1.05fr .95fr; gap: 42px; align-items: center;
     }
-
-    .login .hero {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      padding: 12px 10px;
-    }
-
+    .login .hero { display: flex; flex-direction: column; gap: 22px; padding: 12px 10px; }
     .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      width: fit-content;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: .72rem;
-      font-weight: 700;
-      color: var(--primary);
-      background: rgba(110, 231, 183, 0.08);
-      border: 1px solid rgba(110,231,183,0.2);
+      display: inline-flex; align-items: center; width: fit-content; gap: 8px; padding: 8px 12px;
+      border-radius: 999px; letter-spacing: .08em; text-transform: uppercase; font-size: .72rem; font-weight: 700;
+      color: var(--primary); background: rgba(110,231,183,.08); border: 1px solid rgba(110,231,183,.2);
     }
-
     .login .hero h1 {
-      margin: 0;
-      font-size: clamp(2.7rem, 5vw, 5.1rem);
-      line-height: 0.95;
-      font-weight: 900;
-      letter-spacing: -0.06em;
+      margin: 0; font-size: clamp(2.7rem, 5vw, 5.1rem); line-height: .95; font-weight: 900; letter-spacing: -0.06em;
       background: linear-gradient(135deg, #c2ffe8 0%, var(--primary) 28%, #9ed0ff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
-
     .login .hero p {
-      margin: 0;
-      max-width: 620px;
-      color: var(--muted);
-      font-size: 1.12rem;
-      line-height: 1.7;
+      margin: 0; max-width: 620px; color: var(--muted); font-size: 1.12rem; line-height: 1.7;
     }
-
     .login .features {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 8px;
-      max-width: 620px;
+      display: grid; grid-template-columns: repeat(2, minmax(200px, 1fr)); gap: 16px; margin-top: 8px; max-width: 620px;
     }
-
     .feature {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      background: rgba(255,255,255,0.02);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-weight: 600;
+      display: flex; align-items: center; gap: 12px; color: var(--muted); background: rgba(255,255,255,.02);
+      border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-weight: 600;
     }
-
     .feature::before {
-      content: "✓";
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      font-weight: 900;
-      color: var(--primary);
-      background: rgba(110,231,183,0.12);
-      border: 1px solid rgba(110,231,183,0.15);
+      content: "✓"; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%;
+      font-weight: 900; color: var(--primary); background: rgba(110,231,183,.12); border: 1px solid rgba(110,231,183,.15);
     }
-
     .login .box {
-      width: min(100%, 460px);
-      justify-self: end;
-      background: rgba(7, 17, 24, 0.72);
-      border: 1px solid rgba(154, 194, 219, 0.14);
-      border-radius: var(--radius);
-      padding: 26px 24px 22px;
-      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.04);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      width: min(100%, 460px); justify-self: end; background: rgba(7,17,24,.72); border: 1px solid rgba(154,194,219,.14);
+      border-radius: var(--radius); padding: 26px 24px 22px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.04);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     }
-
     .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.7rem;
-      font-weight: 900;
-      letter-spacing: .09em;
-      margin-bottom: 18px;
+      display: flex; align-items: center; gap: 8px; font-size: 1.7rem; font-weight: 900; letter-spacing: .09em; margin-bottom: 18px;
     }
-
-    .brand b {
-      color: var(--primary);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.75; transform: scale(1.04); }
-    }
-
+    .brand b { color: var(--primary); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.75;transform:scale(1.04)} }
     .tabs {
-      display: flex;
-      gap: 8px;
-      padding: 8px;
-      margin: 0 0 18px;
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.04);
-      border-radius: 14px;
+      display: flex; gap: 8px; padding: 8px; margin: 0 0 18px; background: rgba(255,255,255,.02);
+      border: 1px solid rgba(255,255,255,.04); border-radius: 14px;
     }
-
     .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      border-radius: 10px;
-      padding: 11px 12px;
-      color: var(--muted);
-      font-weight: 800;
-      letter-spacing: .02em;
-      transition: all 0.2s ease;
+      flex: 1; background: transparent; border: none; border-radius: 10px; padding: 11px 12px; color: var(--muted);
+      font-weight: 800; letter-spacing: .02em; transition: all .2s ease;
     }
-
     .tab-btn.active {
-      background: linear-gradient(135deg, rgba(110,231,183,0.18), rgba(99,179,255,0.12));
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px rgba(110,231,183,0.18);
+      background: linear-gradient(135deg, rgba(110,231,183,.18), rgba(99,179,255,.12)); color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(110,231,183,.18);
     }
-
     .form-group { display: none; }
     .form-group.active { display: grid; gap: 14px; }
-
-    .login h2 {
-      margin: 0;
-      font-size: clamp(1.7rem, 3vw, 2.2rem);
-      letter-spacing: -0.04em;
-    }
-
-    .login p.subtitle {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.96rem;
-      line-height: 1.6;
-    }
-
-    .field {
-      display: grid;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .field label {
-      color: var(--muted);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      font-weight: 800;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
+    .login h2 { margin: 0; font-size: clamp(1.7rem,3vw,2.2rem); letter-spacing: -.04em; }
+    .login p.subtitle { margin: 0; color: var(--muted); font-size: .96rem; line-height: 1.6; }
+    .field { display: grid; gap: 8px; margin-top: 2px; }
+    .field label { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
+    .input-wrap { position: relative; }
     .field input {
-      width: 100%;
-      background: rgba(8, 16, 22, 0.72);
-      border: 1px solid rgba(110,231,183,0.12);
-      border-radius: 14px;
-      color: var(--text);
-      padding: 14px 44px 14px 14px;
-      outline: none;
-      transition: all 0.2s ease;
+      width: 100%; background: rgba(8,16,22,.72); border: 1px solid rgba(110,231,183,.12); border-radius: 14px; color: var(--text);
+      padding: 14px 44px 14px 14px; outline: none; transition: all .2s ease;
     }
-
-    .field input::placeholder {
-      color: rgba(157, 183, 201, 0.6);
-    }
-
-    .field input:focus {
-      border-color: rgba(110,231,183,0.4);
-      box-shadow: 0 0 0 4px rgba(110,231,183,0.08);
-      background: rgba(8, 16, 22, 0.9);
-    }
-
+    .field input::placeholder { color: rgba(157,183,201,.6); }
+    .field input:focus { border-color: rgba(110,231,183,.4); box-shadow: 0 0 0 4px rgba(110,231,183,.08); background: rgba(8,16,22,.9); }
     .toggle-pass {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: transparent;
-      border: 0;
-      color: var(--muted);
-      font-size: 0.82rem;
-      font-weight: 700;
-      padding: 4px 6px;
-      cursor: pointer;
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: transparent; border: 0;
+      color: var(--muted); font-size: .82rem; font-weight: 700; padding: 4px 6px; cursor: pointer;
     }
-
     .btn, .secondary {
-      border: 0;
-      border-radius: 14px;
-      padding: 14px 16px;
-      font-weight: 800;
-      font-size: 0.92rem;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      transition: all 0.2s ease;
+      border: 0; border-radius: 14px; padding: 14px 16px; font-weight: 800; font-size: .92rem; letter-spacing: .04em; text-transform: uppercase; transition: all .2s ease;
     }
-
     .btn {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-2));
-      color: #062a1d;
-      box-shadow: 0 12px 20px rgba(110,231,183,0.18);
-      margin-top: 8px;
+      width: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #062a1d;
+      box-shadow: 0 12px 20px rgba(110,231,183,.18); margin-top: 8px;
     }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 24px rgba(110,231,183,0.22);
-    }
-
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 18px 24px rgba(110,231,183,.22); }
     .secondary {
-      width: 100%;
-      background: rgba(110,231,183,0.08);
-      color: var(--text);
-      border: 1px solid rgba(110,231,183,0.18);
+      width: 100%; background: rgba(110,231,183,.08); color: var(--text); border: 1px solid rgba(110,231,183,.18);
     }
-
-    .secondary:hover {
-      background: rgba(110,231,183,0.12);
-      border-color: rgba(110,231,183,0.32);
-    }
-
+    .secondary:hover { background: rgba(110,231,183,.12); border-color: rgba(110,231,183,.32); }
     .msg {
-      display: none;
-      min-height: 18px;
-      margin-top: 8px;
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: .88rem;
-      line-height: 1.45;
+      display: none; min-height: 18px; margin-top: 8px; padding: 10px 12px; border-radius: 12px; font-size: .88rem; line-height: 1.45;
       border: 1px solid transparent;
     }
-
     .msg.show { display: block; }
-    .msg.error {
-      color: #f9b5b5;
-      background: rgba(248,113,113,0.08);
-      border-color: rgba(248,113,113,0.24);
-    }
-    .msg.success {
-      color: #baf5d5;
-      background: rgba(34,197,94,0.08);
-      border-color: rgba(34,197,94,0.28);
-    }
-
+    .msg.error { color: #f9b5b5; background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.24); }
+    .msg.success { color: #baf5d5; background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.28); }
     .app-shell {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 30px 18px;
-      background: radial-gradient(circle at top, rgba(110,231,183,0.06), transparent 38%);
+      min-height: 100vh; display: grid; place-items: center; padding: 30px 18px; background: radial-gradient(circle at top, rgba(110,231,183,.06), transparent 38%);
     }
-
     .app-card {
-      width: min(880px, 100%);
-      background: rgba(8,17,24,0.72);
-      border: 1px solid rgba(154, 194, 219, 0.12);
-      border-radius: 28px;
-      box-shadow: var(--shadow);
-      padding: 38px 28px;
-      text-align: center;
+      width: min(880px, 100%); background: rgba(8,17,24,.72); border: 1px solid rgba(154,194,219,.12); border-radius: 28px; box-shadow: var(--shadow); padding: 38px 28px; text-align: center;
     }
-
-    .app-card .brand {
-      justify-content: center;
-      margin-bottom: 6px;
-    }
-
-    .app-card h2 {
-      margin: 0 0 10px;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.1;
-      letter-spacing: -0.05em;
-    }
-
-    .app-card p {
-      margin: 0 auto 24px;
-      max-width: 540px;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .app-actions {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .app-actions .btn {
-      width: auto;
-      margin-top: 0;
-      min-width: 220px;
-    }
+    .app-card .brand { justify-content: center; margin-bottom: 6px; }
+    .app-card h2 { margin: 0 0 10px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.05em; }
+    .app-card p { margin: 0 auto 24px; max-width: 540px; color: var(--muted); line-height: 1.7; }
+    .app-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+    .app-actions .btn { width: auto; margin-top: 0; min-width: 220px; }
 
     @media (max-width: 960px) {
-      .login .container {
-        grid-template-columns: 1fr;
-      }
-
-      .login .hero {
-        padding: 0;
-        text-align: center;
-        align-items: center;
-      }
-
-      .login .features {
-        grid-template-columns: 1fr;
-        width: min(440px, 100%);
-      }
-
-      .login .box {
-        justify-self: center;
-      }
+      .login .container { grid-template-columns: 1fr; }
+      .login .hero { padding: 0; text-align: center; align-items: center; }
+      .login .features { grid-template-columns: 1fr; width: min(440px, 100%); }
+      .login .box { justify-self: center; }
     }
-
     @media (max-width: 560px) {
       .login { padding: 18px 14px; }
       .login .box { padding: 22px 18px; }
       .brand { font-size: 1.45rem; }
       .tabs { padding: 6px; }
-      .tab-btn { font-size: 0.82rem; }
+      .tab-btn { font-size: .82rem; }
       .btn, .secondary { padding: 13px 14px; }
       .app-card { padding: 28px 18px; }
     }
@@ -454,7 +195,6 @@
 
       <div class="box">
         <div class="brand">IMPULSE <b>AI</b></div>
-
         <div class="tabs">
           <button type="button" class="tab-btn active" onclick="switchTab('login')">Acceder</button>
           <button type="button" class="tab-btn" onclick="switchTab('signup')">Registrarse</button>
@@ -523,17 +263,8 @@
       <div class="brand">IMPULSE <b>AI</b></div>
       <h2>Configurá tu empresa</h2>
       <p class="subtitle">Antes de entrar al panel, creá el negocio que vas a administrar.</p>
-
-      <div class="field">
-        <label for="business-name">Nombre de la empresa</label>
-        <input id="business-name" type="text" placeholder="Ej: Mi Empresa">
-      </div>
-
-      <div class="field">
-        <label for="business-type">Rubro</label>
-        <input id="business-type" type="text" placeholder="Ej: Comercio, supermercado, motos">
-      </div>
-
+      <div class="field"><label for="business-name">Nombre de la empresa</label><input id="business-name" type="text" placeholder="Ej: Mi Empresa"></div>
+      <div class="field"><label for="business-type">Rubro</label><input id="business-type" type="text" placeholder="Ej: Comercio, supermercado, motos"></div>
       <button class="btn" type="button" onclick="createBusiness()">Crear empresa y continuar</button>
       <div id="msg-setup" class="msg"></div>
       <button class="secondary" type="button" style="margin-top:8px;" onclick="logout()">Cerrar sesión</button>
@@ -553,29 +284,25 @@
   </div>
 
   <script>
-    // Variables globales
     let db = null;
     let user = null;
     let biz = null;
 
-    // Inicializar Supabase cuando el script esté listo
+    const API_URL = 'https://ksuoodeqtjzjyuxkphsy.supabase.co';
+    const API_KEY = 'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
+
     function initializeSupabase() {
+      if (!window.supabase) {
+        console.error('Supabase CDN no cargó');
+        return false;
+      }
       try {
-        db = window.supabase.createClient(
-          'https://ksuoodeqtjzjyuxkphsy.supabase.co',
-          'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF',
-          {
-            auth: { 
-              persistSession: true, 
-              autoRefreshToken: true, 
-              detectSessionInUrl: true 
-            }
-          }
-        );
-        console.log('Supabase inicializado correctamente');
+        db = window.supabase.createClient(API_URL, API_KEY, {
+          auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+        });
         return true;
       } catch (e) {
-        console.error('Error al inicializar Supabase:', e);
+        console.error('Error inicializando Supabase:', e);
         return false;
       }
     }
@@ -591,10 +318,8 @@
     function switchTab(tab) {
       document.querySelectorAll('.form-group').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
       const form = document.getElementById(tab + '-form');
       if (form) form.classList.add('active');
-
       const activeBtn = document.querySelector('.tab-btn[onclick*="' + tab + '"]');
       if (activeBtn) activeBtn.classList.add('active');
     }
@@ -614,25 +339,31 @@
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
     }
 
-    async function init() {
-      if (!db) {
-        console.error('Supabase no está inicializado');
-        return;
-      }
-
+    function showGenericFallback(message) {
       const loginView = document.getElementById('login');
       const appView = document.getElementById('app');
       const setupView = document.getElementById('setup');
+      loginView.classList.remove('hidden');
+      appView.classList.add('hidden');
+      setupView.classList.add('hidden');
+      appView.style.display = 'none';
+      setMsg(message, 'error', 'login');
+    }
+
+    async function init() {
+      if (!db) {
+        showGenericFallback('La conexión con Supabase no está lista. Recargá la página.');
+        return;
+      }
 
       try {
-        const { data: { session }, error } = await db.auth.getSession();
-        if (error) throw error;
+        const { data: { session }, error: sessionError } = await db.auth.getSession();
+        if (sessionError) throw sessionError;
 
         if (!session) {
-          loginView.classList.remove('hidden');
-          appView.classList.add('hidden');
-          setupView.classList.add('hidden');
-          appView.style.display = 'none';
+          document.getElementById('login').classList.remove('hidden');
+          document.getElementById('app').classList.add('hidden');
+          document.getElementById('setup').classList.add('hidden');
           return;
         }
 
@@ -640,46 +371,52 @@
         if (userError) throw userError;
 
         if (!currentUser) {
-          loginView.classList.remove('hidden');
-          appView.classList.add('hidden');
-          setupView.classList.add('hidden');
-          appView.style.display = 'none';
+          document.getElementById('login').classList.remove('hidden');
+          document.getElementById('app').classList.add('hidden');
+          document.getElementById('setup').classList.add('hidden');
           return;
         }
 
         user = currentUser;
 
-        const { data: businessRow, error: qError } = await db
-          .from('business_members')
-          .select('business_id, businesses(*)')
-          .eq('user_id', user.id)
-          .limit(1)
-          .maybeSingle();
+        try {
+          const { data: businessRow, error: qError } = await db
+            .from('business_members')
+            .select('business_id, businesses(*)')
+            .eq('user_id', user.id)
+            .limit(1)
+            .maybeSingle();
 
-        if (qError) throw qError;
+          if (qError) throw qError;
 
-        if (!businessRow) {
-          loginView.classList.add('hidden');
-          appView.classList.add('hidden');
-          setupView.classList.remove('hidden');
-          return;
+          if (!businessRow) {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('app').classList.add('hidden');
+            document.getElementById('setup').classList.remove('hidden');
+            return;
+          }
+
+          biz = businessRow.businesses;
+          document.getElementById('login').classList.add('hidden');
+          document.getElementById('setup').classList.add('hidden');
+          const appView = document.getElementById('app');
+          appView.classList.remove('hidden');
+          appView.style.display = 'grid';
+        } catch (e) {
+          console.warn('Faltan tablas o permisos de negocio:', e);
+          document.getElementById('login').classList.add('hidden');
+          document.getElementById('setup').classList.remove('hidden');
+          setMsg('Tu sesión está activa, pero faltan configuraciones del negocio.', 'error', 'setup');
         }
-
-        biz = businessRow.businesses;
-        loginView.classList.add('hidden');
-        setupView.classList.add('hidden');
-        appView.classList.remove('hidden');
-        appView.style.display = 'grid';
       } catch (e) {
-        console.error('init auth error:', e);
-        document.getElementById('login').classList.remove('hidden');
-        setMsg('Error de inicio de sesión: ' + (e.message || 'No se pudo validar la sesión.'), 'error', 'login');
+        console.error('init auth:', e);
+        showGenericFallback('No se pudo validar la sesión. Intenta iniciar sesión nuevamente.');
       }
     }
 
     async function login() {
       if (!db) {
-        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'login');
+        setMsg('Sistema no disponible, recargá la página.', 'error', 'login');
         return;
       }
 
@@ -702,27 +439,34 @@
 
         user = data.user;
 
-        const { data: businessRow, error: businessError } = await db
-          .from('business_members')
-          .select('business_id, businesses(*)')
-          .eq('user_id', user.id)
-          .limit(1)
-          .maybeSingle();
+        try {
+          const { data: businessRow, error: businessError } = await db
+            .from('business_members')
+            .select('business_id, businesses(*)')
+            .eq('user_id', user.id)
+            .limit(1)
+            .maybeSingle();
 
-        if (businessError) throw businessError;
+          if (businessError) throw businessError;
 
-        if (!businessRow) {
+          if (!businessRow) {
+            document.getElementById('login').classList.add('hidden');
+            document.getElementById('setup').classList.remove('hidden');
+            return;
+          }
+
+          biz = businessRow.businesses;
+          document.getElementById('login').classList.add('hidden');
+          document.getElementById('setup').classList.add('hidden');
+          const appView = document.getElementById('app');
+          appView.classList.remove('hidden');
+          appView.style.display = 'grid';
+        } catch (e) {
+          console.warn('No se pudo cargar negocio:', e);
           document.getElementById('login').classList.add('hidden');
           document.getElementById('setup').classList.remove('hidden');
-          return;
+          setMsg('Tu cuenta existe, pero aún no hay un negocio asociado.', 'error', 'setup');
         }
-
-        biz = businessRow.businesses;
-        document.getElementById('login').classList.add('hidden');
-        document.getElementById('setup').classList.add('hidden');
-        const appView = document.getElementById('app');
-        appView.classList.remove('hidden');
-        appView.style.display = 'grid';
       } catch (e) {
         console.error('login error:', e);
         setMsg('No se pudo iniciar sesión: ' + (e.message || 'Credenciales inválidas.'), 'error', 'login');
@@ -731,7 +475,7 @@
 
     async function signup() {
       if (!db) {
-        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'signup');
+        setMsg('Sistema no disponible, recargá la página.', 'error', 'signup');
         return;
       }
 
@@ -739,20 +483,9 @@
       const pass = document.getElementById('pass-signup').value;
       const confirm = document.getElementById('pass-confirm').value;
 
-      if (!validateEmail(email)) {
-        setMsg('Ingresá un email válido.', 'error', 'signup');
-        return;
-      }
-
-      if (pass.length < 6) {
-        setMsg('La contraseña debe tener al menos 6 caracteres.', 'error', 'signup');
-        return;
-      }
-
-      if (pass !== confirm) {
-        setMsg('Las contraseñas no coinciden.', 'error', 'signup');
-        return;
-      }
+      if (!validateEmail(email)) { setMsg('Ingresá un email válido.', 'error', 'signup'); return; }
+      if (pass.length < 6) { setMsg('La contraseña debe tener al menos 6 caracteres.', 'error', 'signup'); return; }
+      if (pass !== confirm) { setMsg('Las contraseñas no coinciden.', 'error', 'signup'); return; }
 
       try {
         const { data, error } = await db.auth.signUp({ email, password: pass });
@@ -766,16 +499,12 @@
 
     async function resetPassword() {
       if (!db) {
-        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'login');
+        setMsg('Sistema no disponible, recargá la página.', 'error', 'login');
         return;
       }
 
       const email = document.getElementById('email-login').value.trim();
-
-      if (!validateEmail(email)) {
-        setMsg('Ingresá un email válido para recuperar la contraseña.', 'error', 'login');
-        return;
-      }
+      if (!validateEmail(email)) { setMsg('Ingresá un email válido para recuperar la contraseña.', 'error', 'login'); return; }
 
       try {
         const { error } = await db.auth.resetPasswordForEmail(email);
@@ -789,22 +518,16 @@
 
     async function createBusiness() {
       if (!db) {
-        setMsg('Sistema no disponible, intenta recargar la página.', 'error', 'setup');
+        setMsg('Sistema no disponible, recargá la página.', 'error', 'setup');
         return;
       }
 
       const name = document.getElementById('business-name').value.trim();
       const type = document.getElementById('business-type').value.trim();
-
-      if (!name) {
-        setMsg('Ingresá el nombre de tu empresa.', 'error', 'setup');
-        return;
-      }
+      if (!name) { setMsg('Ingresá el nombre de tu empresa.', 'error', 'setup'); return; }
 
       try {
-        if (!user) {
-          throw new Error('No hay usuario activo');
-        }
+        if (!user) throw new Error('No hay usuario activo');
 
         const { data: businessData, error: businessError } = await db
           .from('businesses')
@@ -837,15 +560,12 @@
       } catch (e) {
         console.error('logout error:', e);
       }
-
-      user = null;
-      biz = null;
+      user = null; biz = null;
       document.getElementById('login').classList.remove('hidden');
       document.getElementById('setup').classList.add('hidden');
       const appView = document.getElementById('app');
       appView.classList.add('hidden');
       appView.style.display = 'none';
-
       document.getElementById('email-login').value = '';
       document.getElementById('pass-login').value = '';
       document.getElementById('email-signup').value = '';
@@ -865,17 +585,12 @@
       }
     });
 
-    // Esperar a que Supabase esté listo antes de inicializar
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        if (initializeSupabase()) {
-          init();
-        }
+      document.addEventListener('DOMContentLoaded', function () {
+        if (initializeSupabase()) init();
       });
     } else {
-      if (initializeSupabase()) {
-        init();
-      }
+      if (initializeSupabase()) init();
     }
   </script>
 </body>
