@@ -154,23 +154,143 @@
     .msg.show { display: block; }
     .msg.error { color: #f9b5b5; background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.24); }
     .msg.success { color: #baf5d5; background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.28); }
+
     .app-shell {
-      min-height: 100vh; display: grid; place-items: center; padding: 30px 18px; background: radial-gradient(circle at top, rgba(110,231,183,.06), transparent 38%);
+      min-height: 100vh; display: grid; place-items: center; padding: 32px 18px; background: radial-gradient(circle at top, rgba(110,231,183,.08), transparent 35%);
     }
     .app-card {
-      width: min(880px, 100%); background: rgba(8,17,24,.72); border: 1px solid rgba(154,194,219,.12); border-radius: 28px; box-shadow: var(--shadow); padding: 38px 28px; text-align: center;
+      width: min(1200px, 100%); background: rgba(8,17,24,.74); border: 1px solid rgba(154,194,219,.12); border-radius: 30px; box-shadow: var(--shadow); padding: 28px 26px 32px;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     }
-    .app-card .brand { justify-content: center; margin-bottom: 6px; }
-    .app-card h2 { margin: 0 0 10px; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -.05em; }
-    .app-card p { margin: 0 auto 24px; max-width: 540px; color: var(--muted); line-height: 1.7; }
-    .app-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
-    .app-actions .btn { width: auto; margin-top: 0; min-width: 220px; }
+    .app-header {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .app-user {
+      display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 999px; background: rgba(255,255,255,.03); border: 1px solid var(--line); color: var(--muted); font-weight: 700;
+    }
+    .app-user .dot {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--success); box-shadow: 0 0 12px rgba(34,197,94,.8);
+    }
+    .welcome-row {
+      display: flex; justify-content: space-between; align-items: end; gap: 20px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .welcome-row h2 {
+      margin: 8px 0 0; font-size: clamp(1.9rem, 3vw, 3rem); letter-spacing: -.06em;
+    }
+    .app-actions {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 12px;
+    }
+    .app-actions .btn, .app-actions .secondary {
+      width: auto; min-width: 150px; margin-top: 0;
+    }
+
+    .dashboard { display: grid; gap: 20px; }
+    .dashboard-grid {
+      display: grid; grid-template-columns: repeat(4, minmax(180px, 1fr)); gap: 18px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 18px; padding: 18px 18px 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .stat-card .label {
+      color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-size: .7rem; font-weight: 800;
+    }
+    .stat-card .value {
+      margin-top: 14px; font-size: clamp(1.8rem, 2.2vw, 2.5rem); font-weight: 800; letter-spacing: -.06em;
+    }
+    .stat-card .delta {
+      margin-top: 10px; display: inline-block; padding: 6px 9px; border-radius: 999px; font-size: .76rem; font-weight: 800;
+    }
+    .delta.positive { background: rgba(34,197,94,.1); color: #baf5d5; }
+    .delta.negative { background: rgba(248,113,113,.08); color: #f9b5b5; }
+    .delta.warning { background: rgba(251,191,36,.1); color: #fcd34d; }
+
+    .charts, .bottom-grid {
+      display: grid; grid-template-columns: 1.4fr .9fr; gap: 20px;
+    }
+    .chart-card {
+      background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 20px; padding: 18px 18px 16px;
+    }
+    .card-head {
+      display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .card-head h3 {
+      margin: 0; font-size: 1.02rem; letter-spacing: -.03em;
+    }
+    .card-head span {
+      color: var(--muted); font-size: .75rem; font-weight: 700;
+    }
+    .sparkline {
+      height: 180px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: end; gap: 10px; padding-top: 10px;
+    }
+    .sparkline span {
+      display: block; height: var(--h); min-height: 14%; border-radius: 10px 10px 0 0;
+      background: linear-gradient(180deg, rgba(110,231,183,.95), rgba(99,179,255,.72));
+      box-shadow: 0 10px 20px rgba(110,231,183,.12);
+    }
+    .ring-wrap {
+      display: flex; justify-content: center; align-items: center; margin: 10px 0 18px;
+    }
+    .ring {
+      width: 160px; height: 160px; border-radius: 50%;
+      background: conic-gradient(var(--primary) 0 72%, rgba(255,255,255,.06) 72% 100%);
+      display: grid; place-items: center; position: relative;
+    }
+    .ring::before {
+      content: ""; position: absolute; inset: 18px; border-radius: 50%; background: rgba(8,17,24,.9);
+      border: 1px solid var(--line);
+    }
+    .ring-center {
+      position: relative; z-index: 1; display: grid; place-items: center; text-align: center;
+      line-height: 1.1;
+    }
+    .ring-center strong { font-size: 2rem; letter-spacing: -.06em; }
+    .ring-center small { color: var(--muted); }
+    .mini-list {
+      list-style: none; margin: 0; padding: 0; display: grid; gap: 10px;
+    }
+    .mini-list li {
+      display: flex; justify-content: space-between; gap: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .mini-list strong { color: var(--text); }
+
+    .bars {
+      display: grid; gap: 14px;
+    }
+    .bar-item {
+      display: grid; grid-template-columns: 110px 1fr 50px; align-items: center; gap: 12px; color: var(--muted); font-size: .88rem;
+    }
+    .bar-item b { color: var(--text); font-size: .86rem; }
+    .bar {
+      position: relative; height: 10px; border-radius: 999px; background: rgba(255,255,255,.04); overflow: hidden;
+    }
+    .bar i {
+      position: absolute; inset: 0 auto 0 0; display: block; border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .activity-list {
+      list-style: none; margin: 0; padding: 0; display: grid; gap: 14px;
+    }
+    .activity-list li {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; background: rgba(255,255,255,.02); border: 1px solid rgba(255,255,255,.04); border-radius: 12px; color: var(--muted);
+    }
+    .activity-main { display: flex; align-items: center; gap: 10px; }
+    .pill {
+      display: inline-flex; align-items: center; justify-content: center; min-width: 60px; padding: 6px 8px; border-radius: 999px; font-size: .68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .pill.green { background: rgba(34,197,94,.12); color: #baf5d5; }
+    .pill.blue { background: rgba(99,179,255,.12); color: #cfe8ff; }
+    .pill.yellow { background: rgba(251,191,36,.12); color: #fef3c7; }
+    .time { color: var(--muted); font-size: .75rem; }
 
     @media (max-width: 960px) {
       .login .container { grid-template-columns: 1fr; }
       .login .hero { padding: 0; text-align: center; align-items: center; }
       .login .features { grid-template-columns: 1fr; width: min(440px, 100%); }
       .login .box { justify-self: center; }
+      .dashboard-grid { grid-template-columns: repeat(2, minmax(180px,1fr)); }
+      .charts, .bottom-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 560px) {
       .login { padding: 18px 14px; }
@@ -179,7 +299,9 @@
       .tabs { padding: 6px; }
       .tab-btn { font-size: .82rem; }
       .btn, .secondary, .demo-btn { padding: 13px 14px; }
-      .app-card { padding: 28px 18px; }
+      .app-card { padding: 24px 18px 28px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .bar-item { grid-template-columns: 90px 1fr 40px; }
     }
   </style>
 </head>
@@ -281,12 +403,140 @@
 
   <div id="app" class="hidden app-shell" style="display:none;">
     <div class="app-card">
-      <div class="brand">IMPULSE <b>AI</b></div>
-      <h2>Panel activo</h2>
-      <p id="demoStatus">La sesión quedó habilitada y el sistema ya está listo para mostrar el dashboard completo.</p>
-      <div class="app-actions">
-        <button class="btn" type="button" onclick="window.location.reload()">Continuar</button>
-        <button class="secondary" type="button" onclick="logout()">Cerrar sesión</button>
+      <div class="app-header">
+        <div class="brand">IMPULSE <b>AI</b></div>
+        <div class="app-user"><span class="dot"></span><span id="userLabel">Operaciones</span></div>
+      </div>
+
+      <div class="welcome-row">
+        <div>
+          <div class="eyebrow" style="font-size:.62rem; padding:7px 10px;">Dashboard principal</div>
+          <h2>Panel financiero</h2>
+        </div>
+        <div class="app-actions">
+          <button class="btn" type="button" onclick="window.location.reload()">Actualizar</button>
+          <button class="secondary" type="button" onclick="logout()">Cerrar sesión</button>
+        </div>
+      </div>
+
+      <div class="dashboard">
+        <div class="dashboard-grid">
+          <div class="stat-card">
+            <div class="label">Ingresos</div>
+            <div class="value">$84.6K</div>
+            <div class="delta positive">+12.4%</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Cobranza</div>
+            <div class="value">$41.2K</div>
+            <div class="delta positive">+8.1%</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Gastos</div>
+            <div class="value">$23.9K</div>
+            <div class="delta warning">+2.3%</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Margen</div>
+            <div class="value">31.8%</div>
+            <div class="delta negative">-0.6%</div>
+          </div>
+        </div>
+
+        <div class="charts">
+          <div class="chart-card">
+            <div class="card-head">
+              <h3>Flujo de caja</h3>
+              <span>Últimos 7 días</span>
+            </div>
+            <div class="sparkline">
+              <span style="--h: 34%"></span>
+              <span style="--h: 42%"></span>
+              <span style="--h: 58%"></span>
+              <span style="--h: 48%"></span>
+              <span style="--h: 66%"></span>
+              <span style="--h: 64%"></span>
+              <span style="--h: 76%"></span>
+              <span style="--h: 82%"></span>
+              <span style="--h: 70%"></span>
+              <span style="--h: 88%"></span>
+              <span style="--h: 94%"></span>
+              <span style="--h: 100%"></span>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="card-head">
+              <h3>Meta del negocio</h3>
+              <span>Mes actual</span>
+            </div>
+            <div class="ring-wrap">
+              <div class="ring">
+                <div class="ring-center">
+                  <strong>72%</strong>
+                  <small>cumplido</small>
+                </div>
+              </div>
+            </div>
+            <ul class="mini-list">
+              <li><span>Venta objetivo</span><strong>$95K</strong></li>
+              <li><span>Actual</span><strong>$68K</strong></li>
+              <li><span>Faltante</span><strong>$27K</strong></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bottom-grid">
+          <div class="chart-card">
+            <div class="card-head">
+              <h3>Ventas por canal</h3>
+              <span>Hoy</span>
+            </div>
+            <div class="bars">
+              <div class="bar-item">
+                <span>WhatsApp</span>
+                <div class="bar"><i style="width:78%"></i></div>
+                <b>78%</b>
+              </div>
+              <div class="bar-item">
+                <span>Web</span>
+                <div class="bar"><i style="width:54%"></i></div>
+                <b>54%</b>
+              </div>
+              <div class="bar-item">
+                <span>Instagram</span>
+                <div class="bar"><i style="width:66%"></i></div>
+                <b>66%</b>
+              </div>
+              <div class="bar-item">
+                <span>Recomend.</span>
+                <div class="bar"><i style="width:46%"></i></div>
+                <b>46%</b>
+              </div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="card-head">
+              <h3>Actividades</h3>
+              <span>Reciente</span>
+            </div>
+            <ul class="activity-list">
+              <li>
+                <div class="activity-main"><span class="pill green">Pago</span><span>Cliente Top recibió factura</span></div>
+                <span class="time">Hace 12m</span>
+              </li>
+              <li>
+                <div class="activity-main"><span class="pill blue">IA</span><span>Asistente generó resumen diario</span></div>
+                <span class="time">Hace 1h</span>
+              </li>
+              <li>
+                <div class="activity-main"><span class="pill yellow">Stock</span><span>Se detectó baja de inventario</span></div>
+                <span class="time">Hace 2h</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -300,6 +550,13 @@
     const API_URL = 'https://ksuoodeqtjzjyuxkphsy.supabase.co';
     const API_KEY = 'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
 
+    function updateUserBadge() {
+      const label = document.getElementById('userLabel');
+      if (!label) return;
+      const name = (user && user.email) ? String(user.email).split('@')[0] : 'Operaciones';
+      label.textContent = name;
+    }
+
     function isDemoSession() {
       return localStorage.getItem(DEMO_SESSION_KEY) === '1';
     }
@@ -308,6 +565,7 @@
       localStorage.setItem(DEMO_SESSION_KEY, '1');
       user = { id: 'demo-user', email: 'demo@impulse.ai' };
       biz = { id: 'demo-business', name: 'Negocio Demo', type: 'Demo' };
+      updateUserBadge();
 
       document.getElementById('login').classList.add('hidden');
       document.getElementById('setup').classList.add('hidden');
@@ -381,6 +639,7 @@
       if (isDemoSession()) {
         user = { id: 'demo-user', email: 'demo@impulse.ai' };
         biz = { id: 'demo-business', name: 'Negocio Demo', type: 'Demo' };
+        updateUserBadge();
         document.getElementById('login').classList.add('hidden');
         document.getElementById('setup').classList.add('hidden');
         const appView = document.getElementById('app');
@@ -418,6 +677,7 @@
         }
 
         user = currentUser;
+        updateUserBadge();
 
         try {
           const { data: businessRow, error: qError } = await db
@@ -483,6 +743,7 @@
         if (error) throw error;
 
         user = data.user;
+        updateUserBadge();
 
         try {
           const { data: businessRow, error: businessError } = await db
@@ -627,7 +888,7 @@
       } catch (e) {
         console.error('logout error:', e);
       }
-      user = null; biz = null;
+      user = null; biz = null; updateUserBadge();
       document.getElementById('login').classList.remove('hidden');
       document.getElementById('setup').classList.add('hidden');
       const appView = document.getElementById('app');
@@ -654,9 +915,11 @@
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', function () {
+        updateUserBadge();
         if (initializeSupabase()) init();
       });
     } else {
+      updateUserBadge();
       if (initializeSupabase()) init();
     }
   </script>
