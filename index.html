@@ -142,6 +142,11 @@
       width: 100%; background: rgba(110,231,183,.08); color: var(--text); border: 1px solid rgba(110,231,183,.18);
     }
     .secondary:hover { background: rgba(110,231,183,.12); border-color: rgba(110,231,183,.32); }
+    .demo-btn {
+      width: 100%; background: rgba(99,179,255,.08); color: var(--text); border: 1px solid rgba(99,179,255,.22);
+      margin-top: 8px;
+    }
+    .demo-btn:hover { background: rgba(99,179,255,.12); border-color: rgba(99,179,255,.38); }
     .msg {
       display: none; min-height: 18px; margin-top: 8px; padding: 10px 12px; border-radius: 12px; font-size: .88rem; line-height: 1.45;
       border: 1px solid transparent;
@@ -173,7 +178,7 @@
       .brand { font-size: 1.45rem; }
       .tabs { padding: 6px; }
       .tab-btn { font-size: .82rem; }
-      .btn, .secondary { padding: 13px 14px; }
+      .btn, .secondary, .demo-btn { padding: 13px 14px; }
       .app-card { padding: 28px 18px; }
     }
   </style>
@@ -221,6 +226,7 @@
 
           <button class="btn" type="button" onclick="login()">Iniciar sesión</button>
           <button class="secondary" type="button" onclick="resetPassword()">Recuperar contraseña</button>
+          <button class="demo-btn" type="button" onclick="startDemoSession()">Ingresar como demo</button>
           <div id="msg-login" class="msg"></div>
         </div>
 
@@ -252,6 +258,7 @@
           </div>
 
           <button class="btn" type="button" onclick="signup()">Crear cuenta</button>
+          <button class="demo-btn" type="button" onclick="startDemoSession()">Entrar en demo</button>
           <div id="msg-signup" class="msg"></div>
         </div>
       </div>
@@ -266,6 +273,7 @@
       <div class="field"><label for="business-name">Nombre de la empresa</label><input id="business-name" type="text" placeholder="Ej: Mi Empresa"></div>
       <div class="field"><label for="business-type">Rubro</label><input id="business-type" type="text" placeholder="Ej: Comercio, supermercado, motos"></div>
       <button class="btn" type="button" onclick="createBusiness()">Crear empresa y continuar</button>
+      <button class="demo-btn" type="button" onclick="startDemoSession()">Usar demo</button>
       <div id="msg-setup" class="msg"></div>
       <button class="secondary" type="button" style="margin-top:8px;" onclick="logout()">Cerrar sesión</button>
     </div>
@@ -275,7 +283,7 @@
     <div class="app-card">
       <div class="brand">IMPULSE <b>AI</b></div>
       <h2>Panel activo</h2>
-      <p>La sesión quedó habilitada y el sistema ya está listo para mostrar el dashboard completo.</p>
+      <p id="demoStatus">La sesión quedó habilitada y el sistema ya está listo para mostrar el dashboard completo.</p>
       <div class="app-actions">
         <button class="btn" type="button" onclick="window.location.reload()">Continuar</button>
         <button class="secondary" type="button" onclick="logout()">Cerrar sesión</button>
@@ -288,8 +296,27 @@
     let user = null;
     let biz = null;
 
+    const DEMO_SESSION_KEY = 'impulseAiDemoSession';
     const API_URL = 'https://ksuoodeqtjzjyuxkphsy.supabase.co';
     const API_KEY = 'sb_publishable_mscRoZ4sAGKlIxo5wF6F2Q_f0pqhAoF';
+
+    function isDemoSession() {
+      return localStorage.getItem(DEMO_SESSION_KEY) === '1';
+    }
+
+    function startDemoSession() {
+      localStorage.setItem(DEMO_SESSION_KEY, '1');
+      user = { id: 'demo-user', email: 'demo@impulse.ai' };
+      biz = { id: 'demo-business', name: 'Negocio Demo', type: 'Demo' };
+
+      document.getElementById('login').classList.add('hidden');
+      document.getElementById('setup').classList.add('hidden');
+      const appView = document.getElementById('app');
+      const status = document.getElementById('demoStatus');
+      if (status) status.textContent = 'Modo demo activado: podés probar la experiencia sin depender de Supabase.';
+      appView.classList.remove('hidden');
+      appView.style.display = 'grid';
+    }
 
     function initializeSupabase() {
       if (!window.supabase) {
@@ -351,8 +378,21 @@
     }
 
     async function init() {
+      if (isDemoSession()) {
+        user = { id: 'demo-user', email: 'demo@impulse.ai' };
+        biz = { id: 'demo-business', name: 'Negocio Demo', type: 'Demo' };
+        document.getElementById('login').classList.add('hidden');
+        document.getElementById('setup').classList.add('hidden');
+        const appView = document.getElementById('app');
+        const status = document.getElementById('demoStatus');
+        if (status) status.textContent = 'Modo demo activo: estás probando la app sin depender de Supabase.';
+        appView.classList.remove('hidden');
+        appView.style.display = 'grid';
+        return;
+      }
+
       if (!db) {
-        showGenericFallback('La conexión con Supabase no está lista. Recargá la página.');
+        showGenericFallback('La conexión con Supabase no está lista. Probá entrar en demo o recargá la página.');
         return;
       }
 
@@ -415,8 +455,13 @@
     }
 
     async function login() {
+      if (isDemoSession()) {
+        startDemoSession();
+        return;
+      }
+
       if (!db) {
-        setMsg('Sistema no disponible, recargá la página.', 'error', 'login');
+        setMsg('Sistema no disponible, recargá la página o entra en demo.', 'error', 'login');
         return;
       }
 
@@ -474,8 +519,13 @@
     }
 
     async function signup() {
+      if (isDemoSession()) {
+        startDemoSession();
+        return;
+      }
+
       if (!db) {
-        setMsg('Sistema no disponible, recargá la página.', 'error', 'signup');
+        setMsg('Sistema no disponible, recargá la página o entra en demo.', 'error', 'signup');
         return;
       }
 
@@ -498,8 +548,13 @@
     }
 
     async function resetPassword() {
+      if (isDemoSession()) {
+        setMsg('El modo demo no necesita recuperación de contraseña.', 'success', 'login');
+        return;
+      }
+
       if (!db) {
-        setMsg('Sistema no disponible, recargá la página.', 'error', 'login');
+        setMsg('Sistema no disponible, recargá la página o entra en demo.', 'error', 'login');
         return;
       }
 
@@ -517,8 +572,19 @@
     }
 
     async function createBusiness() {
+      if (isDemoSession()) {
+        biz = { id: 'demo-business', name: 'Negocio Demo', type: 'Demo' };
+        document.getElementById('setup').classList.add('hidden');
+        const appView = document.getElementById('app');
+        const status = document.getElementById('demoStatus');
+        if (status) status.textContent = 'Modo demo activado: podés probar la experiencia sin depender de Supabase.';
+        appView.classList.remove('hidden');
+        appView.style.display = 'grid';
+        return;
+      }
+
       if (!db) {
-        setMsg('Sistema no disponible, recargá la página.', 'error', 'setup');
+        setMsg('Sistema no disponible, recargá la página o entra en demo.', 'error', 'setup');
         return;
       }
 
@@ -555,6 +621,7 @@
     }
 
     async function logout() {
+      localStorage.removeItem(DEMO_SESSION_KEY);
       try {
         if (db) await db.auth.signOut();
       } catch (e) {
